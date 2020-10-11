@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    bootstrap="vendor/autoload.php"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    verbose="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    stopOnError="false"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <testsuites>
+    <testsuite name="Code ACL Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <coverage>
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+    <report>
+      <clover outputFile="tests-reports/clover.xml" />
+      <crap4j outputFile="tests-reports/crap4j.xml" threshold="50" />
+      <html outputDirectory="tests-reports/html-coverage" lowUpperBound="50" highLowerBound="90" />
+      <php outputFile="tests-reports/html-coverage/coverage.php" />
+      <text outputFile="tests-reports/coverage.txt" showUncoveredFiles="false" showOnlySummary="true" />
+      <xml outputDirectory="tests-reports/xml-coverage" />
+    </report>
+  </coverage>
+  <!-- <logging>
+    <junit outputFile="tests-reports/logs/junit.xml" />
+    <teamcity outputFile="tests-reports/logs/teamcity.txt" />
+    <testdoxHtml outputFile="tests-reports/logs/testdox.html" />
+    <testdoxText outputFile="tests-reports/logs/testdox.txt" />
+    <testdoxXml outputFile="tests-reports/logs/testdox.xml" />
+    <text outputFile="tests-reports/logs/logfile.txt" />
+  </logging> -->
+  <php>
+    <env name="CACHE_DRIVER" value="array" />
+    <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+  </php>
+</phpunit>

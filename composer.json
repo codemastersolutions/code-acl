@@ -1,0 +1,76 @@
+{
+    "name": "codemastersolutions/code-acl",
+    "description": "Pacote para Controle de Acesso/Autorização",
+    "keywords": [
+        "codemaster",
+        "solutions",
+        "laravel",
+        "permission",
+        "permissions",
+        "roles",
+        "acl",
+        "security"
+    ],
+    "type": "package",
+    "homepage": "https://github.com/codemastersolutions/code-acl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gilson Gabriel",
+            "email": "gilson@codemastersolucoes.com",
+            "homepage": "https://codemastersolucoes.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CodeMaster\\CodeAcl\\": "src"
+        },
+        "files": [
+            "src/Helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CodeMaster\\CodeAcl\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CodeMaster\\CodeAcl\\CodeAclServiceProvider"
+            ],
+            "aliases": {
+                "CodeAcl": "CodeMaster\\CodeAcl\\Facades\\CodeAcl"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.4",
+        "codemastersolutions/code-log": "^0.1.0",
+        "illuminate/auth": "^8.6",
+        "illuminate/container": "^8.6",
+        "illuminate/contracts": "^8.6",
+        "illuminate/database": "^8.6",
+        "spatie/laravel-sluggable": "^2.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.2",
+        "phpunit/phpunit": "^9.3",
+        "predis/predis": "^1.1",
+        "spatie/phpunit-watcher": "^1.22"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://gilsongabriel:fc6cfbfa05c61f82e29a52c664724f3be6128259@github.com/codemastersolutions/code-log.git"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}

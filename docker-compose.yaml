@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  code-acl:
+    build: ./.docker
+    container_name: code-acl
+    restart: always
+    tty: true
+    ports:
+      - "5500:5500"
