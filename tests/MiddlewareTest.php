@@ -16,6 +16,8 @@ class MiddlewareTest extends TestCase
     protected $permissionMiddleware;
     protected $roleOrPermissionMiddleware;
 
+    private const html = '<html></html>';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -120,50 +122,6 @@ class MiddlewareTest extends TestCase
             ), 403);
     }
 
-    // /** @test */
-    // public function a_user_can_access_a_route_protected_by_permission_middleware_if_have_this_permission()
-    // {
-    //     Auth::login($this->testUser);
-
-    //     $this->testUser->givePermissionTo('edit-articles');
-
-    //     $this->assertEquals(
-    //         $this->runMiddleware(
-    //             $this->permissionMiddleware, 'edit-articles'
-    //         ), 200);
-    // }
-
-    // /** @test */
-    // public function a_user_can_access_a_route_protected_by_this_permission_middleware_if_have_one_of_the_permissions()
-    // {
-    //     Auth::login($this->testUser);
-
-    //     $this->testUser->givePermissionTo('edit-articles');
-
-    //     $this->assertEquals(
-    //         $this->runMiddleware(
-    //             $this->permissionMiddleware, 'edit-news|edit-articles'
-    //         ), 200);
-
-    //     $this->assertEquals(
-    //         $this->runMiddleware(
-    //             $this->permissionMiddleware, ['edit-news', 'edit-articles']
-    //         ), 200);
-    // }
-
-    // /** @test */
-    // public function a_user_cannot_access_a_route_protected_by_the_permission_middleware_if_have_a_different_permission()
-    // {
-    //     Auth::login($this->testUser);
-
-    //     $this->testUser->givePermissionTo('edit-articles');
-
-    //     $this->assertEquals(
-    //         $this->runMiddleware(
-    //             $this->permissionMiddleware, 'edit-news'
-    //         ), 403);
-    // }
-
     /** @test */
     public function a_user_cannot_access_a_route_protected_by_permission_middleware_if_have_not_permissions()
     {
@@ -231,7 +189,7 @@ class MiddlewareTest extends TestCase
 
         try {
             $this->roleMiddleware->handle(new Request(), function () {
-                return (new Response())->setContent('<html></html>');
+                return (new Response())->setContent(self::html);
             }, 'some-role');
         } catch (UnauthorizedException $e) {
             $requiredRoles = $e->getRequiredRoles();
@@ -249,7 +207,7 @@ class MiddlewareTest extends TestCase
 
         try {
             $this->permissionMiddleware->handle(new Request(), function () {
-                return (new Response())->setContent('<html></html>');
+                return (new Response())->setContent(self::html);
             }, 'some-permission');
         } catch (UnauthorizedException $e) {
             $requiredPermissions = $e->getRequiredPermissions();
@@ -262,7 +220,7 @@ class MiddlewareTest extends TestCase
     {
         try {
             return $middleware->handle(new Request(), function () {
-                return (new Response())->setContent('<html></html>');
+                return (new Response())->setContent(self::html);
             }, $parameter, $guard)->status();
         } catch (UnauthorizedException $e) {
             return $e->getStatusCode();

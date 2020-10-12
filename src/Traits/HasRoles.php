@@ -14,13 +14,13 @@ trait HasRoles
 {
     use HasPermissions;
 
-    private $roleClass;
-
     /** @var CodeMaster\CodeAcl\Contracts\Role */
     private RoleContract $roleInstance;
 
     /** @var string */
     private static string $slugRegex = "/^[a-z0-9]+(?:-[a-z0-9]+)*$/";
+
+    private $role_key_name = "code-acl.models.role.primary_key.name";
 
     public static function bootHasRoles()
     {
@@ -233,44 +233,7 @@ trait HasRoles
      */
     public function giveRoles(...$roles): self
     {
-        $roles = collect($roles)->flatten()
-            ->map(function ($role) {
-                if (empty($role)) {
-                    return false;
-                }
-
-                return $this->getStoredRoles($role);
-            })
-            ->filter(function ($role) {
-                return $role instanceof RoleContract;
-            })
-            ->map->id
-            ->all();
-
-            $model = $this->getModel();
-
-        if ($model->exists) {
-            $this->roles()->syncWithoutDetaching($roles);
-            $model->load('roles');
-        } else {
-            $class = \get_class($model);
-
-            $class::saved(
-                function ($object) use ($roles, $model) {
-                    static $modelLastFiredOn;
-                    if ($modelLastFiredOn !== null && $modelLastFiredOn === $model) {
-                        return;
-                    }
-                    $object->roles()->syncWithoutDetaching($roles);
-                    $object->load('roles');
-                    $modelLastFiredOn = $object;
-                }
-            );
-        }
-
-        $this->forgetCachedPermissions();
-
-        return $this;
+        return $this->assignRole($roles);
     }
 
     /**
@@ -330,7 +293,7 @@ trait HasRoles
         }
 
         return $this->roles()->get()
-                    ->contains(config('code-acl.models.role.primary_key.name'), $role->id);
+                    ->contains(config($this->role_key_name), $role->id);
     }
 
     /**
@@ -401,8 +364,8 @@ trait HasRoles
             $subQuery->whereIn(
                 implode('.', [
                     config('code-acl.models.role.table'),
-                    config('code-acl.models.role.primary_key.name')
-                ]), \array_column($roles, config('code-acl.models.role.primary_key.name')));
+                    config($this->role_key_name)
+                ]), \array_column($roles, config($this->role_key_name)));
         });
     }
 }

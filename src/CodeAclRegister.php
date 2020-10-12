@@ -89,10 +89,8 @@ class CodeAclRegister
     public function registerPermissions(): bool
     {
         app(Gate::class)->before(function (Authorizable $user, string $ability) {
-            if (method_exists($user, 'checkPermission')) {
-                if ($user->checkPermission($ability)) {
-                    return true;
-                }
+            if (method_exists($user, 'checkPermission') && $user->checkPermission($ability)) {
+                return true;
             }
 
             if (method_exists($user, 'roles')) {
@@ -103,9 +101,9 @@ class CodeAclRegister
                         return null;
                     }
 
-                    $permissions = $role->permissions()->get();
+                    $localPermissions = $role->permissions()->get();
 
-                    $permissions->map(function ($permission) use ($ability) {
+                    $localPermissions->map(function ($permission) use ($ability) {
                         if (empty($permission)) {
                             return null;
                         }

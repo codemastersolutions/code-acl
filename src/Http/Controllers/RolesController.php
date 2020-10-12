@@ -39,7 +39,11 @@ class RolesController extends BaseController
 
         $items = self::$modelMetaData['pagination']['per_page'];
 
-        self::$perPage = is_int($items) ? ((int) $items > 0 ? (int) $items : 0 ): 0;
+        if (!is_int($items)) {
+            self::$perPage = 0;
+        }
+
+        self::$perPage = (int) $items > 0 ? (int) $items : 0;
     }
 
     /**

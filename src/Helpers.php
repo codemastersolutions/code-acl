@@ -9,6 +9,10 @@ if (! function_exists('per_page')) {
 
         $items = $codeAclMetaData['pagination']['per_page'];
 
-        return is_int($items) ? ((int) $items > 0 ? (int) $items : 0 ): 0;
+        if (!is_int($items)) {
+            return 0;
+        }
+
+        return  (int) $items > 0 ? (int) $items : 0;
     }
 }

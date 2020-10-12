@@ -7,7 +7,7 @@ use Ramsey\Uuid\Uuid;
 
 class PermissionsRouteTest extends TestCase
 {
-    private string $urlPermissions;
+    private string $urlPermissions, $accept, $newPermission, $slugDoesNotExist;
 
     public function setUp(): void
     {
@@ -15,12 +15,15 @@ class PermissionsRouteTest extends TestCase
 
         $urlPath = config('code-acl.defaults.code-acl.path');
         $this->urlPermissions = "api/{$urlPath}/permissions/";
+        $this->accept = "application/json";
+        $this->newPermission = "New Permission Test";
+        $this->slugDoesNotExist = "/slug-not-exits";
     }
 
     /** @test */
     public function it_is_can_retrieve_permissions_from_route_index()
     {
-        $response = $this->get($this->urlPermissions, ['Accept' => 'application/json']);
+        $response = $this->get($this->urlPermissions, ['Accept' => $this->accept]);
         $response->assertStatus(200);
         $response->assertSuccessful();
         $this->assertCount(12, $response['data']);
@@ -60,7 +63,7 @@ class PermissionsRouteTest extends TestCase
         $response = $this->put(
             $this->urlPermissions.$permission->slug,
             ['name' => 'New Insert Articles Name'],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(202);
         $response->assertSuccessful();
@@ -74,25 +77,25 @@ class PermissionsRouteTest extends TestCase
     {
         $response = $this->post(
             $this->urlPermissions,
-            ['name' => 'New Permission Test'],
-            ['Accept' => 'application/json']
+            ['name' => $this->newPermission],
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(201);
         $response->assertCreated();
         $response->assertSuccessful();
-        $this->assertEquals('New Permission Test', $response->json('name'));
+        $this->assertEquals($this->newPermission, $response->json('name'));
         $this->assertTrue(Uuid::isValid($response->json('id')));
     }
 
     /** @test */
     public function it_is_can_delete_a_permission_from_route_delete()
     {
-        $permission = app(PermissionContract::class)->findOrCreate('New Permission Test');
+        $permission = app(PermissionContract::class)->findOrCreate($this->newPermission);
 
         $response = $this->delete(
             $this->urlPermissions.$permission->slug,
             [],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(204);
         $response->assertSuccessful();
@@ -102,15 +105,15 @@ class PermissionsRouteTest extends TestCase
     /** @test */
     public function it_is_get_a_not_found_response_from_routes()
     {
-        $response = $this->get($this->urlPermissions.'/slug-not-exits');
+        $response = $this->get($this->urlPermissions.$this->slugDoesNotExist);
         $response->assertStatus(404);
         $response->assertNotFound();
 
-        $response = $this->put($this->urlPermissions.'/slug-not-exits');
+        $response = $this->put($this->urlPermissions.$this->slugDoesNotExist);
         $response->assertStatus(404);
         $response->assertNotFound();
 
-        $response = $this->delete($this->urlPermissions.'/slug-not-exits');
+        $response = $this->delete($this->urlPermissions.$this->slugDoesNotExist);
         $response->assertStatus(404);
         $response->assertNotFound();
     }
@@ -121,7 +124,7 @@ class PermissionsRouteTest extends TestCase
         $response = $this->post(
             $this->urlPermissions,
             ['name' => 'New Permission Test New Permission Test New Permission Test New Permission Test New Permission Test New Permission Test'],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('name');

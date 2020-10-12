@@ -23,8 +23,6 @@ class UserRolesRequest extends FormRequest
      */
     public function rules()
     {
-        $model = app(config('code-acl.models.role.class'));
-
         return [
             'roles' => "required|array",
         ];

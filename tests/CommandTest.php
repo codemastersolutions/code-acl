@@ -8,19 +8,24 @@ use Illuminate\Support\Facades\Artisan;
 
 class CommandTest extends TestCase
 {
+    private const roleCommand = "code-acl:create-role";
+    private const permissionCommand = "code-acl:create-permission";
+
     /** @test */
     public function it_can_create_a_role()
     {
-        Artisan::call('code-acl:create-role', ['name' => 'new-role']);
+        $role = 'new-role';
 
-        $this->assertCount(1, app(Role::class)::whereName('new-role')->get());
-        $this->assertCount(0, app(Role::class)::whereName('new-role')->first()->permissions);
+        Artisan::call(self::roleCommand, ['name' => $role]);
+
+        $this->assertCount(1, app(Role::class)::whereName($role)->get());
+        $this->assertCount(0, app(Role::class)::whereName($role)->first()->permissions);
     }
 
     /** @test */
     public function it_can_create_a_permission()
     {
-        Artisan::call('code-acl:create-permission', ['name' => 'Command Permission']);
+        Artisan::call(self::permissionCommand, ['name' => 'Command Permission']);
 
         $this->assertCount(1, app(Permission::class)::whereName('Command Permission')->get());
     }
@@ -28,20 +33,24 @@ class CommandTest extends TestCase
     /** @test */
     public function it_can_create_a_role_without_duplication()
     {
-        Artisan::call('code-acl:create-role', ['name' => 'new-role']);
-        Artisan::call('code-acl:create-role', ['name' => 'new-role']);
+        $role = 'new-role';
 
-        $this->assertCount(1, app(Role::class)::whereName('new-role')->get());
-        $this->assertCount(0, app(Role::class)::whereName('new-role')->first()->permissions);
+        Artisan::call(self::roleCommand, ['name' => $role]);
+        Artisan::call(self::roleCommand, ['name' => $role]);
+
+        $this->assertCount(1, app(Role::class)::whereName($role)->get());
+        $this->assertCount(0, app(Role::class)::whereName($role)->first()->permissions);
     }
 
     /** @test */
     public function it_can_create_a_permission_without_duplication()
     {
-        Artisan::call('code-acl:create-permission', ['name' => 'Duplicate Permission']);
-        Artisan::call('code-acl:create-permission', ['name' => 'Duplicate Permission']);
+        $permission = 'Duplicate Permission';
 
-        $this->assertCount(1, app(Permission::class)::whereName('Duplicate Permission')->get());
+        Artisan::call(self::permissionCommand, ['name' => $permission]);
+        Artisan::call(self::permissionCommand, ['name' => $permission]);
+
+        $this->assertCount(1, app(Permission::class)::whereName($permission)->get());
     }
 
     /** @test */
