@@ -49,6 +49,13 @@ class UsersController extends BaseController
         self::$orderByRole = self::$roleUserMetaData['order_by'];
     }
 
+    /**
+     * Give permissions to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserPermissionsRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function givePermissions(UserContract $user, UserPermissionsRequest $request)
     {
         try {
@@ -60,6 +67,13 @@ class UsersController extends BaseController
         }
     }
 
+    /**
+     * Give roles to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function giveRoles(UserContract $user, UserRolesRequest $request)
     {
         try {
@@ -71,6 +85,13 @@ class UsersController extends BaseController
         }
     }
 
+    /**
+     * Get permissions assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function permissions(UserContract $user, Request $request)
     {
         $perPage = per_page(self::$permissionUserMetaData);
@@ -89,6 +110,13 @@ class UsersController extends BaseController
         return response()->json(PermissionsResource::collection($permissions));
     }
 
+    /**
+     * Revoke permissions assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserPermissionsRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function revokePermissions(UserContract $user, UserPermissionsRequest $request)
     {
         try {
@@ -100,6 +128,13 @@ class UsersController extends BaseController
         }
     }
 
+    /**
+     * Revoke roles assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function revokeRoles(UserContract $user, UserRolesRequest $request)
     {
         try {
@@ -111,7 +146,14 @@ class UsersController extends BaseController
         }
     }
 
-    public function roles(UserContract $user, Request $request)
+    /**
+     * Get roles assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function roles(UserContract $user)
     {
         $perPage = per_page(self::$roleUserMetaData);
 
