@@ -6,7 +6,6 @@ use CodeMaster\CodeAcl\Test\User;
 use CodeMaster\CodeAcl\Contracts\Permission;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use Illuminate\Database\Eloquent\Collection;
-use Ramsey\Uuid\Uuid;
 
 class HasPermissionsTest extends TestCase
 {
@@ -42,21 +41,6 @@ class HasPermissionsTest extends TestCase
         $this->assertTrue($user->hasPermission('insert-news'));
     }
 
-    // /** @test */
-    // public function it_does_detach_permissions_when_isnt_soft_deleting()
-    // {
-    //     User::create(['id' => Uuid::uuid4(), 'email' => 'test33@example.com']);
-
-    //     $user = User::whereEmail('test33@example.com')->first();
-    //     $user->givePermissions(['insert-news']);
-    //     $userId = $user->id;
-    //     $user->delete();
-
-    //     $this->expectException(PermissionDoesNotExist::class);
-
-    //     app(PermissionPivot::class)->findByRelationshipId($userId);
-    // }
-
     /** @test */
     public function it_can_revoke_all_permissions_from_a_user()
     {
@@ -72,9 +56,9 @@ class HasPermissionsTest extends TestCase
     {
         $this->testUser->revokeAllPermissions();
 
-        $insert = $this->testUser->givePermissions($this->testInsertPermission->name);
-        $edit = $this->testUser->givePermissions($this->testEditPermission->id);
-        $delete = $this->testUser->givePermissions($this->testDeletePermission->slug);
+        $this->testUser->givePermissions($this->testInsertPermission->name);
+        $this->testUser->givePermissions($this->testEditPermission->id);
+        $this->testUser->givePermissions($this->testDeletePermission->slug);
 
         $permissions = $this->testUser->getAllPermissions();
 

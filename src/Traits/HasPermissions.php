@@ -5,7 +5,6 @@ namespace CodeMaster\CodeAcl\Traits;
 use CodeMaster\CodeAcl\CodeAclRegister;
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
-use CodeMaster\CodeAcl\Test\PermissionControllerTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,13 +12,13 @@ use Ramsey\Uuid\Uuid;
 
 trait HasPermissions
 {
-    private $permissionClass;
-
     /** @var CodeMaster\CodeAcl\Contracts\Permission */
     private PermissionContract $permissionInstance;
 
     /** @var string */
     private static string $slugRegex = "/^[a-z0-9]+(?:-[a-z0-9]+)*$/";
+
+    private $permission_key_name = "code-acl.models.permission.primary_key.name";
 
     public static function bootHasPermissions()
     {
@@ -317,7 +316,7 @@ trait HasPermissions
         }
 
         return $this->getAllPermissions()
-                    ->contains(config('code-acl.models.permission.primary_key.name'), $permission->id);
+                    ->contains(config($this->permission_key_name), $permission->id);
     }
 
     /**
@@ -333,7 +332,7 @@ trait HasPermissions
             $permission = $this->getStoredPermissions($permission);
 
             return $this->permissions()->get()
-            ->contains(config('code-acl.models.permission.primary_key.name'), $permission->id);
+            ->contains(config($this->permission_key_name), $permission->id);
         }
 
         return false;
@@ -429,8 +428,8 @@ trait HasPermissions
                 $subQuery->whereIn(
                     implode('.', [
                         config('code-acl.models.permission.table'),
-                        config('code-acl.models.permission.primary_key.name')
-                    ]), \array_column($permissions, config('code-acl.models.permission.primary_key.name')));
+                        config($this->permission_key_name)
+                    ]), \array_column($permissions, config($this->permission_key_name)));
             });
 
             if (count($rolesWithPermissions) > 0) {

@@ -23,10 +23,6 @@ class RolePermissionsRequest extends FormRequest
      */
     public function rules()
     {
-        $model = app(config('code-acl.models.permission.class'));
-        $conn = $model->getConnectionName();
-        $table = $model->getTable();
-
         return [
             'permissions' => "required|array",
         ];

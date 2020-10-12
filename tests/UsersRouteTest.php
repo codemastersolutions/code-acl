@@ -5,7 +5,7 @@ namespace CodeMaster\CodeAcl\Test;
 
 class RouteTest extends TestCase
 {
-    private string $urlUsers;
+    private string $urlUsers, $accept, $pathPermissions, $pathRoles;
 
     public function setUp(): void
     {
@@ -13,20 +13,23 @@ class RouteTest extends TestCase
 
         $urlPath = config('code-acl.defaults.code-acl.path');
         $this->urlUsers = "api/{$urlPath}/users/";
+        $this->accept = "application/json";
+        $this->pathPermissions = "/permissions";
+        $this->pathRoles = "/roles";
     }
 
     /** @test */
     public function it_is_get_failure_with_give_non_exists_roles_data()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'permissions' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(422);
@@ -36,14 +39,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_revoke_non_exists_roles_data()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'permissions' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(422);
@@ -53,14 +56,14 @@ class RouteTest extends TestCase
     public function it_is_give_permissions_to_a_user()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'permissions' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(201);
@@ -72,14 +75,14 @@ class RouteTest extends TestCase
     public function it_is_revoke_permissions_to_a_user()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'permissions' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(204);
@@ -91,14 +94,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_give_non_exists_permissions_to_a_user()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'permissions' => [
                     'role-1',
                     'role-2'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
@@ -108,14 +111,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_revoke_non_exists_permissions_to_a_user()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'permissions' => [
                     'role-1',
                     'role-2'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
@@ -125,14 +128,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_give_non_exists_permissions_data()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'roles' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(422);
@@ -142,14 +145,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_revoke_non_exists_permissions_data()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/permissions",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathPermissions}",
             [
                 'roles' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(422);
@@ -159,14 +162,14 @@ class RouteTest extends TestCase
     public function it_is_give_roles_to_a_user()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'roles' => [
                     'role-1',
                     'role-2'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(201);
@@ -179,14 +182,14 @@ class RouteTest extends TestCase
     public function it_is_revoke_roles_to_a_user()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'roles' => [
                     'role-1',
                     'role-2'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(204);
@@ -198,14 +201,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_give_non_exists_roles_to_a_user()
     {
         $response = $this->post(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'roles' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
@@ -215,14 +218,14 @@ class RouteTest extends TestCase
     public function it_is_get_failure_with_revoke_non_exists_roles_to_a_user()
     {
         $response = $this->delete(
-            "{$this->urlUsers}{$this->testUser->id}/roles",
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
             [
                 'roles' => [
                     'insert',
                     'list'
                 ]
             ],
-            ['Accept' => 'application/json']
+            ['Accept' => $this->accept]
         );
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
@@ -232,8 +235,8 @@ class RouteTest extends TestCase
     public function it_is_can_get_permissions_attached_to_a_user()
     {
         $response = $this->get(
-            "{$this->urlUsers}{$this->testUser1->id}/permissions",
-            ['Accept' => 'application/json']
+            "{$this->urlUsers}{$this->testUser1->id}{$this->pathPermissions}",
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(200);
@@ -244,8 +247,8 @@ class RouteTest extends TestCase
     public function it_is_can_get_roles_attached_to_a_user()
     {
         $response = $this->get(
-            "{$this->urlUsers}{$this->testUser1->id}/roles",
-            ['Accept' => 'application/json']
+            "{$this->urlUsers}{$this->testUser1->id}{$this->pathRoles}",
+            ['Accept' => $this->accept]
         );
 
         $response->assertStatus(200);

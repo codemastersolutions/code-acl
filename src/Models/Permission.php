@@ -131,63 +131,6 @@ class Permission extends Model implements PermissionContract
     /**
      * @inheritDoc
      */
-    public function getStoredPermission($permission)
-    {
-        $permission = $this->getStoredPermissions($permission);
-
-        if (($permission instanceof Collection) && ($permission->count() > 0)) {
-            return $permission->first();
-        }
-
-        if ($permission instanceof PermissionContract) {
-            return $permission;
-        }
-
-        throw new PermissionDoesNotExist;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getStoredPermissions($permissions)
-    {
-        $permissionClass = $this->getPermissionInstance();
-        $isUuid = is_string($permissions) ? Uuid::isValid($permissions) : false;
-        $isSlug = is_string($permissions) ? preg_match(self::$slugRegex, $permissions) : false;
-
-        if (is_string($permissions) && !$isUuid && !$isSlug) {
-            $permissions = $permissionClass->findByName($permissions);
-        }
-
-        if (is_string($permissions) && !$isUuid && $isSlug) {
-            $permissions = $permissionClass->findBySlug($permissions);
-        }
-
-        if (is_int($permissions) || $isUuid) {
-            $permissions = $permissionClass->findById($permissions);
-        }
-
-        if (is_array($permissions)) {
-            $permissions = $permissionClass
-                ->whereIn('id', $permissions)
-                ->orWhereIn('name', $permissions)
-                ->orWhereIn('slug', $permissions)
-                ->get();
-        }
-
-        if (
-            (($permissions instanceof Collection) && ($permissions->count() === 0)) ||
-            ((!$permissions instanceof Collection) && (!$permissions instanceof Permission))
-        ) {
-            throw new PermissionDoesNotExist;
-        }
-
-        return $permissions;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getStoredPermissionsName(): Collection
     {
         return $this->all()->pluck('name');
