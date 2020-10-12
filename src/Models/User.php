@@ -30,7 +30,7 @@ class User extends Model implements AuthorizableContract, AuthenticatableContrac
         self::$modelClass = config('code-acl.defaults.user');
 
         if (empty(self::$modelClass)) {
-            new UserModelNotFound();
+            throw UserModelNotFound::config('config/code-acl.php');
         }
 
         self::$model = app(self::$modelClass);

@@ -16,7 +16,7 @@ trait SetUpPivot
     public function setUp()
     {
         if (empty(self::$modelData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$conn = config('laravel-acl.defaults.connection');

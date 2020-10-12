@@ -2,6 +2,8 @@
 
 namespace CodeMaster\CodeAcl\Test;
 
+use CodeMaster\CodeAcl\Exceptions\ConfigNotLoaded;
+
 class SetUpPivotTest extends TestCase
 {
     /** @test */
@@ -43,7 +45,7 @@ class SetUpPivotTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_the_config_not_loaded()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(ConfigNotLoaded::class);
 
         app('config')->set('code-acl.models.permission', []);
 
@@ -51,5 +53,4 @@ class SetUpPivotTest extends TestCase
 
         $model->setUp();
     }
-
 }

@@ -24,9 +24,7 @@ class User extends Model implements AuthorizableContract, AuthenticatableContrac
 
     public function convertToModels(Collection $permissions)
     {
-        $permissions = $this->convertToPermissionModels($permissions);
-
-        return $permissions;
+        return $this->convertToPermissionModels($permissions);
     }
 
     public static function boot()

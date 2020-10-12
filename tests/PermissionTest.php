@@ -128,6 +128,6 @@ class PermissionTest extends TestCase
 
         $this->expectException(PermissionException::class);
 
-        $permission = $class->create(['name' => 'other-test-permission']);
+        $class->create(['name' => 'other-test-permission']);
     }
 }

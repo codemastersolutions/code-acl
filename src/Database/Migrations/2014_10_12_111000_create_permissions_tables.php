@@ -19,7 +19,7 @@ class CreatePermissionsTables extends Migration
         self::$conn = config('code-acl.defaults.connection');
 
         if (empty(self::$model) || empty(self::$conn)) {
-            new ConfigNotLoaded();
+            return new ConfigNotLoaded('config/code-acl.php');
         }
     }
 

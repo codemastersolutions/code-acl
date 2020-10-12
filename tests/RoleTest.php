@@ -128,6 +128,6 @@ class RoleTest extends TestCase
 
         $this->expectException(RoleException::class);
 
-        $role = $class->create(['name' => 'other-test-role']);
+        $class->create(['name' => 'other-test-role']);
     }
 }

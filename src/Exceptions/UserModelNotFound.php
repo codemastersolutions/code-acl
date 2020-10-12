@@ -2,12 +2,14 @@
 
 namespace CodeMaster\CodeAcl\Exceptions;
 
-use Exception;
+use InvalidArgumentException;
 
-class UserModelNotFound
+class UserModelNotFound extends InvalidArgumentException
 {
-    public function __construct()
+    public static function config($config)
     {
-        throw new Exception("Error: User model couldn't be loaded.");
+        return new static(
+            "Error: {$config} not loaded. Run [php artisan config:clear] and try again."
+        );
     }
 }

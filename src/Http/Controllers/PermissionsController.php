@@ -28,7 +28,7 @@ class PermissionsController extends BaseController
         self::$modelMetaData = config('code-acl.models.permission.meta_data');
 
         if (empty(self::$modelMetaData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$orderBy = self::$modelMetaData['order_by'];

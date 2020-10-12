@@ -35,11 +35,11 @@ class UsersController extends BaseController
         self::$roleUserMetaData = config('code-acl.models.user_has_role.meta_data');
 
         if (empty(self::$model)) {
-            new UserModelNotFound();
+            throw UserModelNotFound::config('config/code-acl.php');
         }
 
         if (empty(self::$permissionUserMetaData) || empty(self::$roleUserMetaData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$orderByPermission = self::$permissionUserMetaData['order_by'];

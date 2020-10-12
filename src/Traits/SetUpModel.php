@@ -19,7 +19,7 @@ trait SetUpModel
     public function setUp()
     {
         if (empty(self::$modelData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$conn = config('code-acl.defaults.connection');
