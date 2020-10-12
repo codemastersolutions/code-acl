@@ -24,8 +24,6 @@ class UserPermissionsRequest extends FormRequest
     public function rules()
     {
         $model = app(config('code-acl.models.role.class'));
-        $conn = $model->getConnectionName();
-        $table = $model->getTable();
 
         return [
             'permissions' => "required|array",

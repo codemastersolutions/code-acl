@@ -8,7 +8,7 @@ use CodeMaster\CodeAcl\Exceptions\UnauthorizedException;
 
 class RoleOrPermissionMiddleware
 {
-    public function handle($request, Closure $next, $roleOrPermission, $guard = null)
+    public function handle($request, Closure $next, $roleOrPermission)
     {
         if (Auth::guest()) {
             throw UnauthorizedException::notLoggedIn();

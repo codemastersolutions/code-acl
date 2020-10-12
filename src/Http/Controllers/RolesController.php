@@ -24,6 +24,8 @@ class RolesController extends BaseController
     /** @var int $items */
     private static int $perPage;
 
+    public const URL_PERMISSIONS = 'roles/{role}/permissions';
+
     public function __construct()
     {
         self::$model = app(config('code-acl.models.role.class'));

@@ -28,6 +28,9 @@ class UsersController extends BaseController
     /** @var array|null $orderByPermission */
     private static $orderByPermission;
 
+    public const URL_PERMISSIONS = 'users/{user}/permissions';
+    public const URL_ROLES = 'users/{user}/roles';
+
     public function __construct()
     {
         self::$model = app(config('code-acl.defaults.user'));

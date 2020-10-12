@@ -23,7 +23,7 @@ class CreateRolesTables extends Migration
         self::$conn = config('code-acl.defaults.connection');
 
         if (empty(self::$model) || empty(self::$conn)) {
-            return new ConfigNotLoaded('config/code-acl.php');
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
     }
 

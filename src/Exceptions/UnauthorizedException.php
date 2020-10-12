@@ -10,11 +10,13 @@ class UnauthorizedException extends HttpException
 
     private $requiredPermissions = [];
 
+    private const DISPLAY_EXCEPTION = 'code-acl.display_permission_in_exception';
+
     public static function forRoles(array $roles): self
     {
         $message = 'User does not have the right roles.';
 
-        if (config('code-acl.display_permission_in_exception')) {
+        if (config(self::DISPLAY_EXCEPTION)) {
             $permStr = implode(', ', $roles);
             $message = 'User does not have the right roles. Necessary roles are '.$permStr;
         }
@@ -29,7 +31,7 @@ class UnauthorizedException extends HttpException
     {
         $message = 'User does not have the right permissions.';
 
-        if (config('code-acl.display_permission_in_exception')) {
+        if (config(self::DISPLAY_EXCEPTION)) {
             $permStr = implode(', ', $permissions);
             $message = 'User does not have the right permissions. Necessary permissions are '.$permStr;
         }
@@ -74,7 +76,7 @@ class UnauthorizedException extends HttpException
     {
         $message = 'User does not have any of the necessary access rights.';
 
-        if (config('code-acl.display_permission_in_exception') && config('code-acl.display_role_in_exception')) {
+        if (config(self::DISPLAY_EXCEPTION) && config('code-acl.display_role_in_exception')) {
             $permStr = implode(', ', $rolesOrPermissions);
             $message = 'User does not have the right permissions. Necessary permissions are '.$permStr;
         }

@@ -134,16 +134,16 @@ class CodeAclRegister
             });
         }
 
-        $permissions = [];
+        $localPermissions = [];
 
         foreach ($params as $attr => $value) {
             $p = $this->permissions->where($attr, $value)->first();
             if ($p instanceof PermissionContract) {
-                array_push($permissions, $p);
+                array_push($localPermissions, $p);
             }
         }
 
-        return new Collection($permissions);
+        return new Collection($localPermissions);
     }
 
     /**
