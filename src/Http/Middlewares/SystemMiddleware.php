@@ -8,7 +8,7 @@ use CodeMaster\CodeAcl\Exceptions\UnauthorizedException;
 
 class SystemMiddleware
 {
-    public function handle($request, Closure $next, $system, $guard = null)
+    public function handle($request, Closure $next, $system)
     {
         if (Auth::guest()) {
             throw UnauthorizedException::notLoggedIn();

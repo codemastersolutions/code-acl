@@ -33,15 +33,6 @@ interface Role
     public static function findByName(string $name): self;
 
     /**
-     * Find a role by name.
-     *
-     * @param string $name
-     * @throws \CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist
-     * @return \CodeMaster\CodeAcl\Contracts\Role
-     */
-    // public static function findByNameOrSlug(string $name): self;
-
-    /**
      * Find a role by its name.
      *
      * @param string $slug

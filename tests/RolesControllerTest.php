@@ -75,6 +75,8 @@ class RolesControllerTest extends TestCase
 
         app('config')->set('code-acl.models.role.meta_data', []);
 
-        new RolesController();
+        $controller = new RolesController();
+
+        $this->assertInstanceOf(RolesController::class, $controller);
     }
 }

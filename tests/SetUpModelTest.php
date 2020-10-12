@@ -2,6 +2,8 @@
 
 namespace CodeMaster\CodeAcl\Test;
 
+use CodeMaster\CodeAcl\Exceptions\ConfigNotLoaded;
+
 class SetUpModelTest extends TestCase
 {
     /** @test */
@@ -41,9 +43,9 @@ class SetUpModelTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_the_config_not_loaded()
+    public function it_throws_an_exception_when_the_config_not_loaded_on_set_up_model()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(ConfigNotLoaded::class);
 
         app('config')->set('code-acl.models.permission', []);
 
@@ -51,5 +53,4 @@ class SetUpModelTest extends TestCase
 
         $model->setUp();
     }
-
 }

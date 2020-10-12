@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle($request, Closure $next, $role, $guard = null)
+    public function handle($request, Closure $next, $role)
     {
         if (Auth::guest()) {
             throw UnauthorizedException::notLoggedIn();

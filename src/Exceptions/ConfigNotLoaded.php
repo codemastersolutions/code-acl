@@ -2,12 +2,14 @@
 
 namespace CodeMaster\CodeAcl\Exceptions;
 
-use Exception;
+use InvalidArgumentException;
 
-class ConfigNotLoaded
+class ConfigNotLoaded extends InvalidArgumentException
 {
-    public function __construct()
+    public static function config($config)
     {
-        throw new Exception("Error: config/code-acl.php not loaded. Run [php artisan config:clear] and try again.");
+        return new static(
+            "Error: {$config} not loaded. Run [php artisan config:clear] and try again."
+        );
     }
 }

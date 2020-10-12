@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class PermissionMiddleware
 {
-    public function handle($request, Closure $next, $permission, $guard = null)
+    public function handle($request, Closure $next, $permission)
     {
-        if (Auth::guard($guard)->guest()) {
+        if (Auth::guest()) {
             throw UnauthorizedException::notLoggedIn();
         }
 
@@ -19,7 +19,7 @@ class PermissionMiddleware
             : explode('|', $permission);
 
         foreach ($permissions as $permission) {
-            if (Auth::guard($guard)->user()->can($permission)) {
+            if (Auth::user()->can($permission)) {
                 return $next($request);
             }
         }

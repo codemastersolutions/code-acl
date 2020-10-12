@@ -30,7 +30,7 @@ class CodeAclServiceProvider extends ServiceProvider
         $codeAclLoader->clearClassPermissions();
         $codeAclLoader->registerPermissions();
 
-        $this->app->singleton(CodeAclRegister::class, function ($app) use ($codeAclLoader) {
+        $this->app->singleton(CodeAclRegister::class, function () use ($codeAclLoader) {
             return $codeAclLoader;
         });
     }

@@ -24,13 +24,15 @@ class RolesController extends BaseController
     /** @var int $items */
     private static int $perPage;
 
+    public const URL_PERMISSIONS = 'roles/{role}/permissions';
+
     public function __construct()
     {
         self::$model = app(config('code-acl.models.role.class'));
         self::$modelMetaData = config('code-acl.models.role.meta_data');
 
         if (empty(self::$modelMetaData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$orderBy = self::$modelMetaData['order_by'];

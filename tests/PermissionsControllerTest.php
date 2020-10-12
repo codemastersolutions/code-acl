@@ -76,7 +76,8 @@ class PermissionControllerTest extends TestCase
 
         app('config')->set('code-acl.models.permission.meta_data', []);
 
-        new PermissionsController();
+        $controller = new PermissionsController();
 
+        $this->assertInstanceOf(PermissionsController::class, $controller);
     }
 }

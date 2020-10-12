@@ -28,6 +28,9 @@ class UsersController extends BaseController
     /** @var array|null $orderByPermission */
     private static $orderByPermission;
 
+    public const URL_PERMISSIONS = 'users/{user}/permissions';
+    public const URL_ROLES = 'users/{user}/roles';
+
     public function __construct()
     {
         self::$model = app(config('code-acl.defaults.user'));
@@ -35,11 +38,11 @@ class UsersController extends BaseController
         self::$roleUserMetaData = config('code-acl.models.user_has_role.meta_data');
 
         if (empty(self::$model)) {
-            new UserModelNotFound();
+            throw UserModelNotFound::config('config/code-acl.php');
         }
 
         if (empty(self::$permissionUserMetaData) || empty(self::$roleUserMetaData)) {
-            new ConfigNotLoaded();
+            throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
         self::$orderByPermission = self::$permissionUserMetaData['order_by'];
