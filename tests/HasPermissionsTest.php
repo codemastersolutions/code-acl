@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class HasPermissionsTest extends TestCase
 {
+    private const EDIT_NEWS = "Edit News";
+
     /** @test */
     public function it_check_if_permission_exists_by_has_direct_permission_by_permission_name()
     {
@@ -134,10 +136,10 @@ class HasPermissionsTest extends TestCase
     /** @test */
     public function it_can_scope_users_without_permissions_only_permission()
     {
-        $this->testUser->givePermissions('Edit News');
-        $this->testUser1->givePermissions('Edit Articles', 'Edit News');
+        $this->testUser->givePermissions(self::EDIT_NEWS);
+        $this->testUser1->givePermissions('Edit Articles', self::EDIT_NEWS);
 
-        $scopedUsers = User::permission('Edit News')->get();
+        $scopedUsers = User::permission(self::EDIT_NEWS)->get();
 
         $this->assertEquals($scopedUsers->count(), 2);
         $this->assertCount(2, $scopedUsers);

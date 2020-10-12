@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Artisan;
 
 class CommandTest extends TestCase
 {
-    private const roleCommand = "code-acl:create-role";
-    private const permissionCommand = "code-acl:create-permission";
+    private const ROLE_COMMAND = "code-acl:create-role";
+    private const PERMISSION_COMMAND = "code-acl:create-permission";
 
     /** @test */
     public function it_can_create_a_role()
     {
         $role = 'new-role';
 
-        Artisan::call(self::roleCommand, ['name' => $role]);
+        Artisan::call(self::ROLE_COMMAND, ['name' => $role]);
 
         $this->assertCount(1, app(Role::class)::whereName($role)->get());
         $this->assertCount(0, app(Role::class)::whereName($role)->first()->permissions);
@@ -25,7 +25,7 @@ class CommandTest extends TestCase
     /** @test */
     public function it_can_create_a_permission()
     {
-        Artisan::call(self::permissionCommand, ['name' => 'Command Permission']);
+        Artisan::call(self::PERMISSION_COMMAND, ['name' => 'Command Permission']);
 
         $this->assertCount(1, app(Permission::class)::whereName('Command Permission')->get());
     }
@@ -35,8 +35,8 @@ class CommandTest extends TestCase
     {
         $role = 'new-role';
 
-        Artisan::call(self::roleCommand, ['name' => $role]);
-        Artisan::call(self::roleCommand, ['name' => $role]);
+        Artisan::call(self::ROLE_COMMAND, ['name' => $role]);
+        Artisan::call(self::ROLE_COMMAND, ['name' => $role]);
 
         $this->assertCount(1, app(Role::class)::whereName($role)->get());
         $this->assertCount(0, app(Role::class)::whereName($role)->first()->permissions);
@@ -47,8 +47,8 @@ class CommandTest extends TestCase
     {
         $permission = 'Duplicate Permission';
 
-        Artisan::call(self::permissionCommand, ['name' => $permission]);
-        Artisan::call(self::permissionCommand, ['name' => $permission]);
+        Artisan::call(self::PERMISSION_COMMAND, ['name' => $permission]);
+        Artisan::call(self::PERMISSION_COMMAND, ['name' => $permission]);
 
         $this->assertCount(1, app(Permission::class)::whereName($permission)->get());
     }

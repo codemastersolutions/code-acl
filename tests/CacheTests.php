@@ -29,11 +29,9 @@ class CacheTest extends TestCase
 
         $cacheStore = $this->register->getCacheStore();
 
-        switch (true) {
-            case $cacheStore instanceof \Illuminate\Cache\DatabaseStore:
-                $this->cache_init_count = 1;
-                $this->cache_load_count = 1;
-            default:
+        if ($cacheStore instanceof \Illuminate\Cache\DatabaseStore) {
+            $this->cache_init_count = 1;
+            $this->cache_load_count = 1;
         }
     }
 
