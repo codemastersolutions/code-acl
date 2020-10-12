@@ -111,6 +111,13 @@ class RolesController extends BaseController
         return response()->noContent(204);
     }
 
+    /**
+     * Give permissions to a role.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $role
+     * @param \CodeMaster\CodeAcl\Http\Requests\RolePermissionsRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function givePermissions(RoleContract $role, RolePermissionsRequest $request)
     {
         try {
@@ -122,6 +129,13 @@ class RolesController extends BaseController
         }
     }
 
+    /**
+     * Revoke permissions to a role.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $role
+     * @param \CodeMaster\CodeAcl\Http\Requests\RolePermissionsRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function revokePermissions(RoleContract $role, RolePermissionsRequest $request)
     {
         try {
@@ -133,7 +147,13 @@ class RolesController extends BaseController
         }
     }
 
-    public function permissions(RoleContract $role, Request $request)
+    /**
+     * Get all permissions from a role.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\Role $role
+     * @return \Illuminate\Http\Response
+     */
+    public function permissions(RoleContract $role)
     {
         $permissions = $role->permissions->all();
 
