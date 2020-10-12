@@ -19,9 +19,6 @@ class Role extends Model implements RoleContract
 {
     use SetUpModel, Sluggable, HasPermissions;
 
-    /** @var string */
-    private static string $slugRegex = "/^[a-z0-9]+(?:-[a-z0-9]+)*$/";
-
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [

@@ -16,7 +16,7 @@ class MiddlewareTest extends TestCase
     protected $permissionMiddleware;
     protected $roleOrPermissionMiddleware;
 
-    private const html = '<html></html>';
+    private const HTML = '<html></html>';
 
     public function setUp(): void
     {
@@ -189,7 +189,7 @@ class MiddlewareTest extends TestCase
 
         try {
             $this->roleMiddleware->handle(new Request(), function () {
-                return (new Response())->setContent(self::html);
+                return (new Response())->setContent(self::HTML);
             }, 'some-role');
         } catch (UnauthorizedException $e) {
             $requiredRoles = $e->getRequiredRoles();
@@ -207,7 +207,7 @@ class MiddlewareTest extends TestCase
 
         try {
             $this->permissionMiddleware->handle(new Request(), function () {
-                return (new Response())->setContent(self::html);
+                return (new Response())->setContent(self::HTML);
             }, 'some-permission');
         } catch (UnauthorizedException $e) {
             $requiredPermissions = $e->getRequiredPermissions();
@@ -220,7 +220,7 @@ class MiddlewareTest extends TestCase
     {
         try {
             return $middleware->handle(new Request(), function () {
-                return (new Response())->setContent(self::html);
+                return (new Response())->setContent(self::HTML);
             }, $parameter, $guard)->status();
         } catch (UnauthorizedException $e) {
             return $e->getStatusCode();

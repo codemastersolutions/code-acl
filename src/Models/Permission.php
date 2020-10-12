@@ -15,7 +15,6 @@ use CodeMaster\CodeAcl\Traits\RefreshesCodeAclCache;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Ramsey\Uuid\Uuid;
 
 class Permission extends Model implements PermissionContract
 {
@@ -28,9 +27,6 @@ class Permission extends Model implements PermissionContract
         'updated' => PermissionUpdated::class,
         'deleted' => PermissionDeleted::class,
     ];
-
-    /** @var string */
-    private static string $slugRegex = "/^[a-z0-9]+(?:-[a-z0-9]+)*$/";
 
     /**
      * Model constructor
