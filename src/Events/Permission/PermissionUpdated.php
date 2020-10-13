@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeMaster\CodeAcl\Events;
+namespace CodeMaster\CodeAcl\Events\Permission;
 
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use Illuminate\Queue\SerializesModels;

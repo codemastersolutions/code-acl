@@ -3,9 +3,9 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
-use CodeMaster\CodeAcl\Events\PermissionDeleted;
-use CodeMaster\CodeAcl\Events\PermissionSaved;
-use CodeMaster\CodeAcl\Events\PermissionUpdated;
+use CodeMaster\CodeAcl\Events\Permission\PermissionDeleted;
+use CodeMaster\CodeAcl\Events\Permission\PermissionSaved;
+use CodeMaster\CodeAcl\Events\Permission\PermissionUpdated;
 use CodeMaster\CodeAcl\Exceptions\PermissionAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionException;

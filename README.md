@@ -59,7 +59,7 @@ ou
 ./phpunit-watcher --filter=nome-do-teste
 ```
 
-## Creditos
+## Créditos
 
 - [CodeMaster Soluções](https://github.com/codemastersolutions)
 - [Gilson Gabriel](https://github.com/gilsongabriel)

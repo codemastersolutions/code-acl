@@ -3,7 +3,7 @@
 namespace CodeMaster\CodeAcl\Test;
 
 
-class RouteTest extends TestCase
+class UsersRouteTest extends TestCase
 {
     private string $urlUsers, $accept, $pathPermissions, $pathRoles;
 

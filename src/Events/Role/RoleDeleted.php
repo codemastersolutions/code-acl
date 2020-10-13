@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeMaster\CodeAcl\Events;
+namespace CodeMaster\CodeAcl\Events\Role;
 
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
 use Illuminate\Queue\SerializesModels;

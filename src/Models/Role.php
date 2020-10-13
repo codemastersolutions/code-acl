@@ -3,9 +3,9 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
-use CodeMaster\CodeAcl\Events\RoleDeleted;
-use CodeMaster\CodeAcl\Events\RoleSaved;
-use CodeMaster\CodeAcl\Events\RoleUpdated;
+use CodeMaster\CodeAcl\Events\Role\RoleDeleted;
+use CodeMaster\CodeAcl\Events\Role\RoleSaved;
+use CodeMaster\CodeAcl\Events\Role\RoleUpdated;
 use CodeMaster\CodeAcl\Exceptions\RoleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleException;
