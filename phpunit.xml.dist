@@ -11,6 +11,7 @@
     processIsolation="false"
     stopOnFailure="false"
     stopOnError="false"
+    defaultTimeLimit="120"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
   <testsuites>
     <testsuite name="Code ACL Test Suite">
@@ -22,12 +23,12 @@
       <directory suffix=".php">src/</directory>
     </include>
     <report>
-      <clover outputFile="tests-reports/clover.xml" />
-      <crap4j outputFile="tests-reports/crap4j.xml" threshold="50" />
+      <!-- <clover outputFile="tests-reports/clover.xml" /> -->
+      <!-- <crap4j outputFile="tests-reports/crap4j.xml" threshold="50" /> -->
       <html outputDirectory="tests-reports/html-coverage" lowUpperBound="50" highLowerBound="90" />
-      <php outputFile="tests-reports/html-coverage/coverage.php" />
-      <text outputFile="tests-reports/coverage.txt" showUncoveredFiles="false" showOnlySummary="true" />
-      <xml outputDirectory="tests-reports/xml-coverage" />
+      <!-- <php outputFile="tests-reports/html-coverage/coverage.php" /> -->
+      <!-- <text outputFile="tests-reports/coverage.txt" showUncoveredFiles="false" showOnlySummary="true" /> -->
+      <!-- <xml outputDirectory="tests-reports/xml-coverage" /> -->
     </report>
   </coverage>
   <!-- <logging>

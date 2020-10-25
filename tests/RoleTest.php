@@ -2,10 +2,11 @@
 
 namespace CodeMaster\CodeAcl\Test;
 
-use CodeMaster\CodeAcl\Contracts\Role;
+use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
 use CodeMaster\CodeAcl\Exceptions\RoleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleException;
+use Illuminate\Database\Eloquent\Collection;
 use Ramsey\Uuid\Uuid;
 
 class RoleTest extends TestCase
@@ -15,8 +16,8 @@ class RoleTest extends TestCase
     {
         $this->expectException(RoleAlreadyExists::class);
 
-        app(Role::class)->create(['name' => 'test-role']);
-        app(Role::class)->create(['name' => 'test-role']);
+        app(RoleContract::class)->create(['name' => 'test-role']);
+        app(RoleContract::class)->create(['name' => 'test-role']);
     }
 
     /** @test */
@@ -24,7 +25,7 @@ class RoleTest extends TestCase
     {
         $this->expectException(RoleDoesNotExist::class);
 
-        app(Role::class)->findById(Uuid::uuid4());
+        app(RoleContract::class)->findById(Uuid::uuid4());
     }
 
     /** @test */
@@ -32,7 +33,7 @@ class RoleTest extends TestCase
     {
         $this->expectException(RoleDoesNotExist::class);
 
-        app(Role::class)->findByName('name not exists');
+        app(RoleContract::class)->findByName('name not exists');
     }
 
     /** @test */
@@ -40,13 +41,13 @@ class RoleTest extends TestCase
     {
         $this->expectException(RoleDoesNotExist::class);
 
-        app(Role::class)->findBySlug('slug-not-exists');
+        app(RoleContract::class)->findBySlug('slug-not-exists');
     }
 
     /** @test */
     public function it_is_retrievable_by_id()
     {
-        $role = app(Role::class)->findById($this->testManangerRole->id);
+        $role = app(RoleContract::class)->findById($this->testManangerRole->id);
 
         $this->assertEquals($this->testManangerRole->id, $role->id);
         $this->assertEquals($this->testManangerRole->name, $role->name);
@@ -56,7 +57,7 @@ class RoleTest extends TestCase
     /** @test */
     public function it_is_retrievable_by_name()
     {
-        $role = app(Role::class)->findByName($this->testManangerRole->name);
+        $role = app(RoleContract::class)->findByName($this->testManangerRole->name);
 
         $this->assertEquals($this->testManangerRole->id, $role->id);
         $this->assertEquals($this->testManangerRole->name, $role->name);
@@ -66,7 +67,7 @@ class RoleTest extends TestCase
     /** @test */
     public function it_is_retrievable_by_slug()
     {
-        $role = app(Role::class)->findBySlug($this->testManangerRole->slug);
+        $role = app(RoleContract::class)->findBySlug($this->testManangerRole->slug);
 
         $this->assertEquals($this->testManangerRole->id, $role->id);
         $this->assertEquals($this->testManangerRole->name, $role->name);
@@ -77,7 +78,7 @@ class RoleTest extends TestCase
     public function it_is_retrievable_and_created()
     {
         $roleName = 'Find or Created';
-        $role = app(Role::class)->findOrCreate($roleName);
+        $role = app(RoleContract::class)->findOrCreate($roleName);
 
         $this->assertEquals($roleName, $role->name);
     }
@@ -86,7 +87,7 @@ class RoleTest extends TestCase
     public function it_is_retrievable_created()
     {
         $roleName = 'Edit Articles';
-        $role = app(Role::class)->findOrCreate($roleName);
+        $role = app(RoleContract::class)->findOrCreate($roleName);
 
         $this->assertEquals($roleName, $role->name);
     }
@@ -95,26 +96,26 @@ class RoleTest extends TestCase
     public function it_is_update_role()
     {
         $roleName = 'New Role Article';
-        $role = app(Role::class)->findOrCreate($roleName);
+        $role = app(RoleContract::class)->findOrCreate($roleName);
 
         $this->assertEquals($roleName, $role->name);
-        $this->assertInstanceOf(Role::class, $role);
+        $this->assertInstanceOf(RoleContract::class, $role);
 
         $role->update(['name' => 'Role Article Edited']);
         $role->refresh();
 
         $this->assertEquals('Role Article Edited', $role->name);
-        $this->assertInstanceOf(Role::class, $role);
+        $this->assertInstanceOf(RoleContract::class, $role);
     }
 
     /** @test */
     public function it_is_delete_role()
     {
         $roleName = 'Delete Role';
-        $role = app(Role::class)->findOrCreate($roleName);
+        $role = app(RoleContract::class)->findOrCreate($roleName);
 
         $this->assertEquals($roleName, $role->name);
-        $this->assertInstanceOf(Role::class, $role);
+        $this->assertInstanceOf(RoleContract::class, $role);
 
         $this->assertTrue($role->delete());
     }
@@ -124,10 +125,20 @@ class RoleTest extends TestCase
     {
         app('config')->set('code-acl.models.role.primary_key.name', 'other_id');
 
-        $class = app(Role::class);
+        $class = app(RoleContract::class);
 
         $this->expectException(RoleException::class);
 
         $class->create(['name' => 'other-test-role']);
+    }
+
+    /** @test */
+    public function it_is_get_roles_names()
+    {
+        $class = app(RoleContract::class);
+
+        $names = $class->getStoredNames();
+
+        $this->assertInstanceOf(Collection::class, $names);
     }
 }

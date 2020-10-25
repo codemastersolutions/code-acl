@@ -2,11 +2,11 @@
 
 namespace CodeMaster\CodeAcl\Traits;
 
-use CodeMaster\CodeAcel\CodeAclRegister;
+use CodeMaster\CodeAcl\CodeAclRegister;
 
 trait RefreshesCodeAclCache
 {
-    public static function bootRefreshesCodeAcelCache()
+    public static function bootRefreshesCodeAclCache()
     {
         static::saved(function () {
             app(CodeAclRegister::class)->forgetCachedPermissions();

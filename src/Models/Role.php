@@ -122,8 +122,8 @@ class Role extends Model implements RoleContract
     /**
      * @inheritDoc
      */
-    public static function getNames(): Collection
+    public static function getStoredNames(): Collection
     {
-        return self::all()->pluck('name');
+        return new Collection(self::all()->pluck('name'));
     }
 }

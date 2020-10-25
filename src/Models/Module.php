@@ -9,7 +9,6 @@ use CodeMaster\CodeAcl\Events\Module\ModuleUpdated;
 use CodeMaster\CodeAcl\Exceptions\ModuleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\ModuleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\ModuleException;
-use CodeMaster\CodeAcl\Traits\HasPermissions;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model implements ModuleContract
 {
-    use SetUpModel, Sluggable, HasPermissions;
+    use SetUpModel, Sluggable;
 
     protected $fillable = ['name'];
 
@@ -122,8 +121,8 @@ class Module extends Model implements ModuleContract
     /**
      * @inheritDoc
      */
-    public static function getNames(): Collection
+    public static function getStoredNames(): Collection
     {
-        return self::all()->pluck('name');
+        return new Collection(self::all()->pluck('name'));
     }
 }

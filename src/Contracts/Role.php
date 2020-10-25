@@ -59,18 +59,18 @@ interface Role
     public static function findOrCreate(string $name): self;
 
     /**
-     * Retrieve all roles name
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getNames(): Collection;
-
-    /**
      * Get the number of models to return per page.
      *
      * @return int
      */
     public function getPerPage();
+
+    /**
+     * Retrieve all stored roles name
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getStoredNames(): Collection;
 
     /**
      * A roles can be applied to permission.

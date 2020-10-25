@@ -23,6 +23,6 @@ class ModuleUpdated
      */
     public function __construct(ModuleContract $module)
     {
-        $this->role = $module;
+        $this->module = $module;
     }
 }

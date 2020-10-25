@@ -9,7 +9,6 @@ use CodeMaster\CodeAcl\Events\System\SystemUpdated;
 use CodeMaster\CodeAcl\Exceptions\SystemAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\SystemDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\SystemException;
-use CodeMaster\CodeAcl\Traits\HasPermissions;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class System extends Model implements SystemContract
 {
-    use SetUpModel, Sluggable, HasPermissions;
+    use SetUpModel, Sluggable;
 
     protected $fillable = ['name'];
 
@@ -122,8 +121,8 @@ class System extends Model implements SystemContract
     /**
      * @inheritDoc
      */
-    public static function getNames(): Collection
+    public static function getStoredNames(): Collection
     {
-        return self::all()->pluck('name');
+        return new Collection(self::all()->pluck('name'));
     }
 }

@@ -127,9 +127,9 @@ class Permission extends Model implements PermissionContract
     /**
      * @inheritDoc
      */
-    public function getStoredPermissionsName(): Collection
+    public static function getStoredNames(): Collection
     {
-        return $this->all()->pluck('name');
+        return new Collection(self::all()->pluck('name'));
     }
 
     /**

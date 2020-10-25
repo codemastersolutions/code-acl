@@ -13,6 +13,14 @@ class CreateRolesTables extends Migration
     private static $modelPermissionRole;
     private static $modelRoleUser;
     private static $conn;
+    private static $modelRoleName;
+    private static $modelRoleIndex;
+    private static $modelPermissionRoleName;
+    private static $modelPermissionRoleIndex;
+    private static $modelPermissionRolePrimary;
+    private static $modelRoleUserName;
+    private static $modelRoleUserIndex;
+    private static $modelRoleUserPrimary;
 
     public function __construct() {
         self::$model = config('code-acl.models.role');
@@ -25,6 +33,15 @@ class CreateRolesTables extends Migration
         if (empty(self::$model) || empty(self::$conn)) {
             throw ConfigNotLoaded::config('config/code-acl.php');
         }
+
+        self::$modelRoleName = self::$model['table'];
+        self::$modelRoleIndex = 'lacl_'.self::$modelRoleName.'_name_index';
+        self::$modelPermissionRoleName = self::$modelPermissionRole['table'];
+        self::$modelPermissionRoleIndex = 'lacl_'.self::$modelPermissionRoleName.'_index';
+        self::$modelPermissionRolePrimary= 'lacl_'.self::$modelPermissionRoleName.'_primary';
+        self::$modelRoleUserName = self::$modelRoleUser['table'];
+        self::$modelRoleUserIndex = 'lacl_'.self::$modelRoleUserName.'_index';
+        self::$modelRoleUserPrimary= 'lacl_'.self::$modelRoleUserName.'_primary';
     }
 
     /**
@@ -34,7 +51,7 @@ class CreateRolesTables extends Migration
      */
     public function up()
     {
-        Schema::connection(self::$conn)->create(self::$model['table'], function (Blueprint $table) {
+        Schema::connection(self::$conn)->create(self::$modelRoleName, function (Blueprint $table) {
             switch (self::$model['primary_key']['type']) {
                 case 'uuid': {
                     $table->uuid(self::$model['primary_key']['name'])->unique()->primary();
@@ -52,10 +69,10 @@ class CreateRolesTables extends Migration
             $table->string('slug');
             $table->timestamps();
 
-            $table->index(['name'], 'lacl_roles_name_index');
+            $table->index(['name'], self::$modelRoleIndex);
         });
 
-        Schema::connection(self::$conn)->create(self::$modelPermissionRole['table'], function (Blueprint $table) {
+        Schema::connection(self::$conn)->create(self::$modelPermissionRoleName, function (Blueprint $table) {
             switch (self::$modelPermissionRole['permission_key']['type']) {
                 case 'uuid': {
                     $table->uuid(self::$modelPermissionRole['permission_key']['name']);
@@ -87,7 +104,7 @@ class CreateRolesTables extends Migration
                     self::$modelPermissionRole['permission_key']['name'],
                     self::$modelPermissionRole['role_key']['name']
                 ],
-                'lacl_permission_role_index'
+                self::$modelPermissionRoleIndex
             );
 
             $table->foreign(self::$modelPermissionRole['role_key']['name'])
@@ -105,11 +122,11 @@ class CreateRolesTables extends Migration
                     self::$modelPermissionRole['permission_key']['name'],
                     self::$modelPermissionRole['role_key']['name']
                 ],
-                'lacl_permission_role_primary'
+                self::$modelPermissionRolePrimary
             );
         });
 
-        Schema::connection(self::$conn)->create(self::$modelRoleUser['table'], function (Blueprint $table) {
+        Schema::connection(self::$conn)->create(self::$modelRoleUserName, function (Blueprint $table) {
             switch (self::$modelRoleUser['role_key']['type']) {
                 case 'uuid': {
                     $table->uuid(self::$modelRoleUser['role_key']['name']);
@@ -141,7 +158,7 @@ class CreateRolesTables extends Migration
                     self::$modelRoleUser['role_key']['name'],
                     self::$modelRoleUser['user_key']['name']
                 ],
-                'lacl_role_user_index'
+                self::$modelRoleUserIndex
             );
 
             $table->foreign(self::$modelRoleUser['role_key']['name'])
@@ -159,7 +176,7 @@ class CreateRolesTables extends Migration
                     self::$modelRoleUser['role_key']['name'],
                     self::$modelRoleUser['user_key']['name']
                 ],
-                'lacl_role_user_primary'
+                self::$modelRoleUserPrimary
             );
         });
 
@@ -175,20 +192,20 @@ class CreateRolesTables extends Migration
      */
     public function down()
     {
-        Schema::connection(self::$conn)->table(self::$modelRoleUser['table'], function (Blueprint $table) {
-            $table->dropIndex('lacl_role_user_index');
-            $table->dropPrimary('lacl_role_user_primary');
+        Schema::connection(self::$conn)->table(self::$modelRoleUserName, function (Blueprint $table) {
+            $table->dropIndex(self::$modelRoleUserIndex);
+            $table->dropPrimary(self::$modelRoleUserPrimary);
         });
-        Schema::connection(self::$conn)->table(self::$modelPermissionRole['table'], function (Blueprint $table) {
-            $table->dropIndex('lacl_permission_role_index');
-            $table->dropPrimary('lacl_permission_role_primary');
+        Schema::connection(self::$conn)->table(self::$modelPermissionRoleName, function (Blueprint $table) {
+            $table->dropIndex(self::$modelPermissionRoleIndex);
+            $table->dropPrimary(self::$modelPermissionRoleIndex);
         });
-        Schema::connection(self::$conn)->table(self::$model['table'], function (Blueprint $table) {
-            $table->dropIndex('lacl_roles_name_index');
+        Schema::connection(self::$conn)->table(self::$modelRoleName, function (Blueprint $table) {
+            $table->dropIndex(self::$modelRoleIndex);
             $table->dropPrimary(self::$model['primary_key']['name']);
         });
-        Schema::connection(self::$conn)->dropIfExists(self::$modelRoleUser['table']);
-        Schema::connection(self::$conn)->dropIfExists(self::$modelPermissionRole['table']);
-        Schema::connection(self::$conn)->dropIfExists(self::$model['table']);
+        Schema::connection(self::$conn)->dropIfExists(self::$modelRoleUserName);
+        Schema::connection(self::$conn)->dropIfExists(self::$modelPermissionRoleName);
+        Schema::connection(self::$conn)->dropIfExists(self::$modelRoleName);
     }
 }

@@ -59,13 +59,6 @@ interface System
     public static function findOrCreate(string $name): self;
 
     /**
-     * Retrieve all systems name
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getNames(): Collection;
-
-    /**
      * Get the number of models to return per page.
      *
      * @return int
@@ -73,25 +66,9 @@ interface System
     public function getPerPage();
 
     /**
-     * A systems can be applied to permission.
+     * Retrieve all stored systems name
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function permissions(): BelongsToMany;
-
-    /**
-     * Grant the given permission(s) to a system.
-     *
-     * @param string|array|\CodeMaster\CodeAcl\Contracts\Permission|\Illuminate\Database\Eloquent\Collection ...$permissions
-     * @return $this
-     */
-    public function givePermissions(...$permissions): self;
-
-    /**
-     * Revoke the permissions.
-     *
-     * @param \CodeMaster\CodeAcl\Contracts\Permission|\CodeMaster\CodeAcl\Contracts\Permission[]|string|string[]|int[] ...$permissions
-     * @return $this
-     */
-    public function revokePermissions(...$permissions): self;
+    public static function getStoredNames(): Collection;
 }

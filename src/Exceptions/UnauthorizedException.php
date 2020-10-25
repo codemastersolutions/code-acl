@@ -6,9 +6,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UnauthorizedException extends HttpException
 {
-    private $requiredRoles = [];
-
+    private $requiredModules = [];
     private $requiredPermissions = [];
+    private $requiredRoles = [];
+    private $requiredSystems = [];
 
     private const DISPLAY_EXCEPTION = 'code-acl.display_permission_in_exception';
 
@@ -16,7 +17,7 @@ class UnauthorizedException extends HttpException
     {
         $message = 'User does not have the right roles.';
 
-        if (config(self::DISPLAY_EXCEPTION)) {
+        if (config('code-acl.display_role_in_exception')) {
             $permStr = implode(', ', $roles);
             $message = 'User does not have the right roles. Necessary roles are '.$permStr;
         }
@@ -31,7 +32,7 @@ class UnauthorizedException extends HttpException
     {
         $message = 'User does not have the right permissions.';
 
-        if (config(self::DISPLAY_EXCEPTION)) {
+        if (config('code-acl.display_permission_in_exception')) {
             $permStr = implode(', ', $permissions);
             $message = 'User does not have the right permissions. Necessary permissions are '.$permStr;
         }
@@ -76,7 +77,7 @@ class UnauthorizedException extends HttpException
     {
         $message = 'User does not have any of the necessary access rights.';
 
-        if (config(self::DISPLAY_EXCEPTION) && config('code-acl.display_role_in_exception')) {
+        if (config('code-acl.display_permission_in_exception') && config('code-acl.display_role_in_exception')) {
             $permStr = implode(', ', $rolesOrPermissions);
             $message = 'User does not have the right permissions. Necessary permissions are '.$permStr;
         }
@@ -100,5 +101,15 @@ class UnauthorizedException extends HttpException
     public function getRequiredPermissions(): array
     {
         return $this->requiredPermissions;
+    }
+
+    public function getRequiredModules(): array
+    {
+        return $this->requiredModules;
+    }
+
+    public function getRequiredSystems(): array
+    {
+        return $this->requiredSystems;
     }
 }

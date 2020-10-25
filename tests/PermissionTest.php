@@ -6,6 +6,7 @@ use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Exceptions\PermissionAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionException;
+use Illuminate\Database\Eloquent\Collection;
 use Ramsey\Uuid\Uuid;
 
 class PermissionTest extends TestCase
@@ -129,5 +130,15 @@ class PermissionTest extends TestCase
         $this->expectException(PermissionException::class);
 
         $class->create(['name' => 'other-test-permission']);
+    }
+
+    /** @test */
+    public function it_is_get_permissions_names()
+    {
+        $class = app(PermissionContract::class);
+
+        $names = $class->getStoredNames();
+
+        $this->assertInstanceOf(Collection::class, $names);
     }
 }

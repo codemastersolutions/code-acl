@@ -2,7 +2,9 @@
 
 namespace CodeMaster\CodeAcl\Test;
 
+use CodeMaster\CodeAcl\Traits\HasModules;
 use CodeMaster\CodeAcl\Traits\HasRoles;
+use CodeMaster\CodeAcl\Traits\HasSystems;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -13,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 
 class User extends Model implements AuthorizableContract, AuthenticatableContract
 {
-    use Authorizable, Authenticatable, HasRoles;
+    use Authorizable, Authenticatable, HasRoles, HasModules, HasSystems;
 
     protected $table = 'users';
     protected $primaryKey = 'id';

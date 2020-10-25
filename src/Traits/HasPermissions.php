@@ -5,6 +5,7 @@ namespace CodeMaster\CodeAcl\Traits;
 use CodeMaster\CodeAcl\CodeAclRegister;
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
+use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -41,8 +42,10 @@ trait HasPermissions
     public function checkPermission($permission): bool
     {
         try {
-            return $this->hasPermission($permission);
+            return $this->hasPermission($permission) || $this->hasPermissionViaRole($permission);
         } catch (PermissionDoesNotExist $e) {
+            return false;
+        } catch (RoleDoesNotExist $e) {
             return false;
         }
     }
@@ -328,7 +331,7 @@ trait HasPermissions
      */
     public function hasPermission($permission): bool
     {
-        if (method_exists($this, 'permissions')) {
+        if (method_exists($this, 'permissions') && !empty($permission)) {
             $permission = $this->getStoredPermissions($permission);
 
             return $this->permissions()->get()

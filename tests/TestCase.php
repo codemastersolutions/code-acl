@@ -4,8 +4,10 @@ namespace CodeMaster\CodeAcl\Test;
 
 use CodeMaster\CodeAcl\CodeAclRegister;
 use CodeMaster\CodeAcl\CodeAclServiceProvider;
+use CodeMaster\CodeAcl\Contracts\Module as ModuleContract;
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
+use CodeMaster\CodeAcl\Contracts\System as SystemContract;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,6 +23,12 @@ abstract class TestCase extends Orchestra
 
     /** @var \CodeMaster\CodeAcl\Contracts\Role */
     protected $testCreatorRole, $testPublisherRole, $testSupervisorRole, $testManangerRole;
+
+    /** @var \CodeMaster\CodeAcl\Contracts\Module */
+    protected $testModule;
+
+    /** @var \CodeMaster\CodeAcl\Contracts\System */
+    protected $testSystem;
 
     public function setUp(): void
     {
@@ -43,6 +51,8 @@ abstract class TestCase extends Orchestra
         $this->testPublisherRole = app(RoleContract::class)->findByName('Publisher');
         $this->testSupervisorRole = app(RoleContract::class)->findByName('Supervisor');
         $this->testManangerRole = app(RoleContract::class)->findByName('Mananger');
+        $this->testModule = app(ModuleContract::class)->findByName('New Module');
+        $this->testSystem = app(SystemContract::class)->findByName('New System');
         $this->testManangerRole->givePermissions($this->testEditNews);
         $this->testUser->givePermissions($this->testInsertPermission->name);
         $this->testUser->givePermissions($this->testEditPermission->name);
@@ -111,9 +121,13 @@ abstract class TestCase extends Orchestra
 
         include_once __DIR__.'/../src/Database/Migrations/2014_10_12_111000_create_permissions_tables.php';
         include_once __DIR__.'/../src/Database/Migrations/2014_10_12_112000_create_roles_tables.php';
+        include_once __DIR__.'/../src/Database/Migrations/2014_10_12_113000_create_modules_tables.php';
+        include_once __DIR__.'/../src/Database/Migrations/2014_10_12_114000_create_systems_tables.php';
 
         (new \CreatePermissionsTables())->up();
         (new \CreateRolesTables())->up();
+        (new \CreateModulesTables())->up();
+        (new \CreateSystemsTables())->up();
 
         User::create(['email' => 'test@user.com']);
         User::create(['email' => 'test1@user.com']);
@@ -135,6 +149,8 @@ abstract class TestCase extends Orchestra
         $app[RoleContract::class]->create(['name' => 'Mananger']);
         $app[RoleContract::class]->create(['name' => 'Role 1']);
         $app[RoleContract::class]->create(['name' => 'Role 2']);
+        $app[ModuleContract::class]->create(['name' => 'New Module']);
+        $app[SystemContract::class]->create(['name' => 'New System']);
     }
 
     /**

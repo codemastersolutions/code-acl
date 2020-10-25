@@ -5,7 +5,7 @@ namespace CodeMaster\CodeAcl\Test;
 
 class UsersRouteTest extends TestCase
 {
-    private string $urlUsers, $accept, $pathPermissions, $pathRoles;
+    private string $urlUsers, $accept, $pathPermissions, $pathRoles, $pathModules, $pathSystems;
 
     public function setUp(): void
     {
@@ -16,6 +16,42 @@ class UsersRouteTest extends TestCase
         $this->accept = "application/json";
         $this->pathPermissions = "/permissions";
         $this->pathRoles = "/roles";
+        $this->pathSystems = "/systems";
+        $this->pathModules = "/modules";
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_give_non_exists_systems_data()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
+            [
+                'permissions' => [
+                    'insert',
+                    'list'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(422);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_give_non_exists_modules_data()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'permissions' => [
+                    'insert',
+                    'list'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(422);
     }
 
     /** @test */
@@ -23,6 +59,40 @@ class UsersRouteTest extends TestCase
     {
         $response = $this->post(
             "{$this->urlUsers}{$this->testUser->id}{$this->pathRoles}",
+            [
+                'permissions' => [
+                    'insert',
+                    'list'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(422);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_revoke_non_exists_modules_data()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'permissions' => [
+                    'insert',
+                    'list'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(422);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_revoke_non_exists_systems_data()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
             [
                 'permissions' => [
                     'insert',
@@ -53,6 +123,42 @@ class UsersRouteTest extends TestCase
     }
 
     /** @test */
+    public function it_is_give_modules_to_a_user()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'modules' => [
+                    'new-module',
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(201);
+        $response->assertSuccessful();
+        $this->assertTrue($response['result']);
+    }
+
+    /** @test */
+    public function it_is_give_systems_to_a_user()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
+            [
+                'systems' => [
+                    'new-system',
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(201);
+        $response->assertSuccessful();
+        $this->assertTrue($response['result']);
+    }
+
+    /** @test */
     public function it_is_give_permissions_to_a_user()
     {
         $response = $this->post(
@@ -69,6 +175,42 @@ class UsersRouteTest extends TestCase
         $response->assertStatus(201);
         $response->assertSuccessful();
         $this->assertTrue($response['result']);
+    }
+
+    /** @test */
+    public function it_is_revoke_modules_to_a_user()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'modules' => [
+                    'new-module',
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(204);
+        $response->assertSuccessful();
+        $response->assertNoContent();
+    }
+
+    /** @test */
+    public function it_is_revoke_systems_to_a_user()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
+            [
+                'systems' => [
+                    'new-system',
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(204);
+        $response->assertSuccessful();
+        $response->assertNoContent();
     }
 
     /** @test */
@@ -91,6 +233,40 @@ class UsersRouteTest extends TestCase
     }
 
     /** @test */
+    public function it_is_get_failure_with_give_non_exists_modules_to_a_user()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'modules' => [
+                    'role-1',
+                    'role-2'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+        $response->assertStatus(422);
+        $this->assertFalse($response['result']);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_give_non_exists_Systems_to_a_user()
+    {
+        $response = $this->post(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
+            [
+                'systems' => [
+                    'role-1',
+                    'role-2'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+        $response->assertStatus(422);
+        $this->assertFalse($response['result']);
+    }
+
+    /** @test */
     public function it_is_get_failure_with_give_non_exists_permissions_to_a_user()
     {
         $response = $this->post(
@@ -103,6 +279,41 @@ class UsersRouteTest extends TestCase
             ],
             ['Accept' => $this->accept]
         );
+        $response->assertStatus(422);
+        $this->assertFalse($response['result']);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_revoke_non_exists_modules_to_a_user()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathModules}",
+            [
+                'modules' => [
+                    'role-1',
+                    'role-2'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+        $response->assertStatus(422);
+        $this->assertFalse($response['result']);
+    }
+
+    /** @test */
+    public function it_is_get_failure_with_revoke_non_exists_systems_to_a_user()
+    {
+        $response = $this->delete(
+            "{$this->urlUsers}{$this->testUser->id}{$this->pathSystems}",
+            [
+                'systems' => [
+                    'role-1',
+                    'role-2'
+                ]
+            ],
+            ['Accept' => $this->accept]
+        );
+
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
     }
@@ -229,6 +440,30 @@ class UsersRouteTest extends TestCase
         );
         $response->assertStatus(422);
         $this->assertFalse($response['result']);
+    }
+
+    /** @test */
+    public function it_is_can_get_modules_attached_to_a_user()
+    {
+        $response = $this->get(
+            "{$this->urlUsers}{$this->testUser1->id}{$this->pathModules}",
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(200);
+        $response->assertSuccessful();
+    }
+
+    /** @test */
+    public function it_is_can_get_systems_attached_to_a_user()
+    {
+        $response = $this->get(
+            "{$this->urlUsers}{$this->testUser1->id}{$this->pathSystems}",
+            ['Accept' => $this->accept]
+        );
+
+        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 
     /** @test */
