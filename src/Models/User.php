@@ -4,7 +4,9 @@ namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\User as UserContract;
 use CodeMaster\CodeAcl\Exceptions\UserModelNotFound;
+use CodeMaster\CodeAcl\Traits\HasModules;
 use CodeMaster\CodeAcl\Traits\HasRoles;
+use CodeMaster\CodeAcl\Traits\HasSystems;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -13,7 +15,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 
 class User extends Model implements AuthorizableContract, AuthenticatableContract, UserContract
 {
-    use Authorizable, Authenticatable, HasRoles;
+    use Authorizable, Authenticatable, HasRoles, HasModules, HasSystems;
 
     /** @var \Illuminate\Database\Eloquent\Model */
     private static $model;

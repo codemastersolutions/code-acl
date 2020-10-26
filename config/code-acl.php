@@ -228,6 +228,178 @@ return [
             */
             'table' => 'role_user'
         ],
+
+        /*
+         * When using the "HasModules" trait from this package, we need to know which
+         * Eloquent model should be used to retrieve your modules. Of course, it
+         * is often just the "Module" model but you may use whatever you like.
+         *
+         * The model you want to use as a Module model needs to implement the
+         * `CodeMaster\CodeAcl\Contracts\Module` contract.
+         */
+        'module' => [
+            'class' => CodeMaster\CodeAcl\Models\Module::class,
+            'primary_key' => [
+                /*
+                 * Name of field for primary key model.
+                 */
+                'name' => 'id',
+                /*
+                 * Type of field for primary key model. Accepted `uuid` or `number`. Default is `uuid`.
+                 *
+                 * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                 */
+                'type' => 'uuid',
+                /*
+                 * If you choose to use the primary key of type `number`, with auto increment, change the property below to true.
+                 */
+                'incrementing' => false
+            ],
+            'meta_data' => [
+                'order_by' => [
+                    'field' => 'created_at',
+                    'direction' => 'desc'
+                ],
+                'pagination' => [
+                    'per_page' => 15
+                ]
+            ],
+            /*
+             * Table name for Module model.
+             * If property is null,
+             */
+            'table' => 'modules'
+        ],
+
+        /*
+         *
+         */
+        'user_has_module' => [
+            'class' => CodeMaster\CodeAcl\Models\ModuleUserPivot::class,
+            'user_key' => [
+                /*
+                * Name of field for morph key model.
+                */
+                'name' => 'user_id',
+                /*
+                * Type of field for morph key model. Accepted `uuid` or `number`. Default is `uuid`.
+                *
+                * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                */
+                'type' => 'uuid',
+            ],
+            'module_key' => [
+                /*
+                 * Name of field for primary key model.
+                 */
+                'name' => 'module_id',
+                /*
+                 * Type of field for primary key model. Accepted `uuid` or `number`. Default is `uuid`.
+                 *
+                 * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                 */
+                'type' => 'uuid',
+            ],
+            'meta_data' => [
+                'order_by' => [
+                    'field' => 'name',
+                    'direction' => 'desc'
+                ],
+                'pagination' => [
+                    'per_page' => 15
+                ]
+            ],
+            /*
+            * Table name for Module model.
+            */
+            'table' => 'module_user'
+        ],
+
+        /*
+         * When using the "HasSystems" trait from this package, we need to know which
+         * Eloquent model should be used to retrieve your systems. Of course, it
+         * is often just the "System" model but you may use whatever you like.
+         *
+         * The model you want to use as a System model needs to implement the
+         * `CodeMaster\CodeAcl\Contracts\System` contract.
+         */
+        'system' => [
+            'class' => CodeMaster\CodeAcl\Models\System::class,
+            'primary_key' => [
+                /*
+                 * Name of field for primary key model.
+                 */
+                'name' => 'id',
+                /*
+                 * Type of field for primary key model. Accepted `uuid` or `number`. Default is `uuid`.
+                 *
+                 * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                 */
+                'type' => 'uuid',
+                /*
+                 * If you choose to use the primary key of type `number`, with auto increment, change the property below to true.
+                 */
+                'incrementing' => false
+            ],
+            'meta_data' => [
+                'order_by' => [
+                    'field' => 'created_at',
+                    'direction' => 'desc'
+                ],
+                'pagination' => [
+                    'per_page' => 15
+                ]
+            ],
+            /*
+             * Table name for Module model.
+             * If property is null,
+             */
+            'table' => 'systems'
+        ],
+
+        /*
+         *
+         */
+        'user_has_system' => [
+            'class' => CodeMaster\CodeAcl\Models\SystemUserPivot::class,
+            'user_key' => [
+                /*
+                * Name of field for morph key model.
+                */
+                'name' => 'user_id',
+                /*
+                * Type of field for morph key model. Accepted `uuid` or `number`. Default is `uuid`.
+                *
+                * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                */
+                'type' => 'uuid',
+            ],
+            'system_key' => [
+                /*
+                 * Name of field for primary key model.
+                 */
+                'name' => 'system_id',
+                /*
+                 * Type of field for primary key model. Accepted `uuid` or `number`. Default is `uuid`.
+                 *
+                 * If you choose to use the primary key of type `number`, the field in the database will be of type unsigned bigint or equivalent.
+                 */
+                'type' => 'uuid',
+            ],
+            'meta_data' => [
+                'order_by' => [
+                    'field' => 'name',
+                    'direction' => 'desc'
+                ],
+                'pagination' => [
+                    'per_page' => 15
+                ]
+            ],
+            /*
+            * Table name for Module model.
+            */
+            'table' => 'system_user'
+        ],
     ],
 
     /*
@@ -292,15 +464,5 @@ return [
          */
 
         'store' => 'default',
-    ],
-
-    'logging' => [
-        'channel' => env('CODEACL_LOG_CHANNEL', 'file'),
-
-        'channels' => [
-            'file' => [
-                'path' => storage_path('logs/code-acl.log')
-            ]
-        ]
-    ],
+    ]
 ];

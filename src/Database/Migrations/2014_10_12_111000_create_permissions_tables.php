@@ -11,6 +11,11 @@ class CreatePermissionsTables extends Migration
     private static $modelUser;
     private static $conn;
     private static $modelPermissionUser;
+    private static $modelPermissionName;
+    private static $modelPermissionIndex;
+    private static $modelPermissionUserName;
+    private static $modelPermissionUserIndex;
+    private static $modelPermissionUserPrimary;
 
     public function __construct() {
         self::$model = config('code-acl.models.permission');
@@ -21,6 +26,12 @@ class CreatePermissionsTables extends Migration
         if (empty(self::$model) || empty(self::$conn)) {
             throw ConfigNotLoaded::config('config/code-acl.php');
         }
+
+        self::$modelPermissionName = self::$model['table'];
+        self::$modelPermissionUserName = self::$modelPermissionUser['table'];
+        self::$modelPermissionIndex = 'lacl_'.self::$modelPermissionName.'_name_index';
+        self::$modelPermissionUserIndex = 'lacl_'.self::$modelPermissionUserName.'_index';
+        self::$modelPermissionUserPrimary= 'lacl_'.self::$modelPermissionUserName.'_primary';
     }
 
     /**
@@ -30,7 +41,7 @@ class CreatePermissionsTables extends Migration
      */
     public function up()
     {
-        Schema::connection(self::$conn)->create(self::$model['table'], function (Blueprint $table) {
+        Schema::connection(self::$conn)->create(self::$modelPermissionName, function (Blueprint $table) {
             switch (self::$model['primary_key']['type']) {
                 case 'uuid': {
                     $table->uuid(self::$model['primary_key']['name'])->unique()->primary();
@@ -48,10 +59,11 @@ class CreatePermissionsTables extends Migration
             $table->string('slug');
             $table->timestamps();
 
-            $table->index(['name'], 'lacl_permissions_name_index');
+            $table->index(['name'], self::$modelPermissionIndex);
         });
 
-        Schema::connection(self::$conn)->create(self::$modelPermissionUser['table'], function (Blueprint $table) {
+
+        Schema::connection(self::$conn)->create(self::$modelPermissionUserName, function (Blueprint $table) {
             switch (self::$modelPermissionUser['permission_key']['type']) {
                 case 'uuid': {
                     $table->uuid(self::$modelPermissionUser['permission_key']['name']);
@@ -83,7 +95,7 @@ class CreatePermissionsTables extends Migration
                     self::$modelPermissionUser['permission_key']['name'],
                     self::$modelPermissionUser['user_key']['name']
                 ],
-                'lacl_permission_user_index'
+                self::$modelPermissionUserIndex
             );
 
             $table->foreign(self::$modelPermissionUser['permission_key']['name'])
@@ -101,7 +113,7 @@ class CreatePermissionsTables extends Migration
                     self::$modelPermissionUser['permission_key']['name'],
                     self::$modelPermissionUser['user_key']['name']
                 ],
-                'lacl_permission_user_primary'
+                self::$modelPermissionUserPrimary
             );
         });
 
@@ -117,16 +129,15 @@ class CreatePermissionsTables extends Migration
      */
     public function down()
     {
-        Schema::connection(self::$conn)->table(self::$modelPermissionUser['table'], function (Blueprint $table) {
-            $table->dropIndex('lacl_permission_user_index');
-            $table->dropPrimary('lacl_permission_user_primary');
+        Schema::connection(self::$conn)->table(self::$modelPermissionUserName, function (Blueprint $table) {
+            $table->dropIndex(self::$modelPermissionUserIndex);
+            $table->dropPrimary(self::$modelPermissionUserPrimary);
         });
-        Schema::connection(self::$conn)->table(self::$model['table'], function (Blueprint $table) {
-            $table->dropIndex('lacl_permissions_name_index');
-            $table->dropIndex('lacl_permissions_name_index');
+        Schema::connection(self::$conn)->table(self::$modelPermissionName, function (Blueprint $table) {
+            $table->dropIndex(self::$modelPermissionIndex);
             $table->dropPrimary(self::$model['primary_key']['name']);
         });
-        Schema::connection(self::$conn)->dropIfExists(self::$modelPermissionUser['table']);
-        Schema::connection(self::$conn)->dropIfExists(self::$model['table']);
+        Schema::connection(self::$conn)->dropIfExists(self::$modelPermissionUserName);
+        Schema::connection(self::$conn)->dropIfExists(self::$modelPermissionName);
     }
 }

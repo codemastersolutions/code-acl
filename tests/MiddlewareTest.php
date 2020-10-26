@@ -2,9 +2,11 @@
 
 namespace CodeMaster\CodeAcl\Test;
 
+use CodeMaster\CodeAcl\Http\Middlewares\ModuleMiddleware;
 use CodeMaster\CodeAcl\Http\Middlewares\PermissionMiddleware;
 use CodeMaster\CodeAcl\Http\Middlewares\RoleMiddleware;
 use CodeMaster\CodeAcl\Http\Middlewares\RoleOrPermissionMiddleware;
+use CodeMaster\CodeAcl\Http\Middlewares\SystemMiddleware;
 use CodeMaster\CodeAcl\Exceptions\UnauthorizedException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,9 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class MiddlewareTest extends TestCase
 {
-    protected $roleMiddleware;
+    protected $moduleMiddleware;
     protected $permissionMiddleware;
+    protected $roleMiddleware;
     protected $roleOrPermissionMiddleware;
+    protected $systemMiddleware;
 
     private const HTML = '<html></html>';
 
@@ -22,11 +26,11 @@ class MiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->roleMiddleware = new RoleMiddleware();
-
+        $this->moduleMiddleware = new ModuleMiddleware();
         $this->permissionMiddleware = new PermissionMiddleware();
-
+        $this->roleMiddleware = new RoleMiddleware();
         $this->roleOrPermissionMiddleware = new RoleOrPermissionMiddleware();
+        $this->systemMiddleware = new SystemMiddleware();
     }
 
     /** @test */
@@ -39,11 +43,29 @@ class MiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function a_guest_cannot_access_a_route_protected_by_rolemiddleware()
+    public function a_guest_cannot_access_a_route_protected_by_role_middleware()
     {
         $this->assertEquals(
             $this->runMiddleware(
                 $this->roleMiddleware, 'Supervisor'
+            ), 403);
+    }
+
+    /** @test */
+    public function a_guest_cannot_access_a_route_protected_by_system_middleware()
+    {
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->systemMiddleware, 'System'
+            ), 403);
+    }
+
+    /** @test */
+    public function a_guest_cannot_access_a_route_protected_by_module_middleware()
+    {
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->moduleMiddleware, 'Module'
             ), 403);
     }
 
@@ -57,6 +79,71 @@ class MiddlewareTest extends TestCase
         $this->assertEquals(
             $this->runMiddleware(
                 $this->roleMiddleware, 'Supervisor'
+            ), 200);
+    }
+
+    /** @test */
+    public function a_user_can_access_a_route_protected_by_system_middleware_if_have_this_role()
+    {
+        Auth::login($this->testUser);
+
+        $this->testUser->assignSystem('New System');
+
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->systemMiddleware, 'New System'
+            ), 200);
+    }
+
+    /** @test */
+    public function a_user_can_access_a_route_protected_by_module_middleware_if_have_this_role()
+    {
+        Auth::login($this->testUser);
+
+        $this->testUser->assignModule('New Module');
+
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->moduleMiddleware, 'New Module'
+            ), 200);
+    }
+
+    /** @test */
+    public function a_user_can_access_a_route_protected_by_system_middleware_if_have_this_system_by_array()
+    {
+        Auth::login($this->testUser);
+
+        $this->testUser->assignSystem('New System');
+
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->systemMiddleware, ['New System']
+            ), 200);
+    }
+
+    /** @test */
+    public function a_user_can_access_a_route_protected_by_module_middleware_if_have_this_module_by_array()
+    {
+        Auth::login($this->testUser);
+
+        $this->testUser->assignModule('New Module');
+
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->moduleMiddleware, ['New Module']
+            ), 200);
+    }
+
+    /** @test */
+    public function a_user_can_access_a_route_protected_by_permission_middleware_if_have_this_permission_by_array()
+    {
+        Auth::login($this->testUser);
+
+        $this->testUser->givePermissions('Insert Articles');
+
+        $this->assertEquals(
+            $this->runMiddleware(
+                $this->permissionMiddleware, ['Insert Articles']
             ), 200);
     }
 
@@ -199,6 +286,26 @@ class MiddlewareTest extends TestCase
     }
 
     /** @test */
+    public function the_required_roles_can_be_showing_in_the_exception()
+    {
+        app('config')->set('code-acl.display_role_in_exception', true);
+
+        Auth::login($this->testUser);
+
+        $requiredRoles = [];
+
+        try {
+            $this->roleMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-role');
+        } catch (UnauthorizedException $e) {
+            $requiredRoles = $e->getRequiredRoles();
+        }
+
+        $this->assertEquals(['some-role'], $requiredRoles);
+    }
+
+    /** @test */
     public function the_required_permissions_can_be_fetched_from_the_exception()
     {
         Auth::login($this->testUser);
@@ -214,6 +321,106 @@ class MiddlewareTest extends TestCase
         }
 
         $this->assertEquals(['some-permission'], $requiredPermissions);
+    }
+
+    /** @test */
+    public function the_required_permissions_can_be_showing_in_the_exception()
+    {
+        app('config')->set('code-acl.display_permission_in_exception', true);
+
+        Auth::login($this->testUser);
+
+        $requiredPermissions = [];
+
+        try {
+            $this->permissionMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-permission');
+        } catch (UnauthorizedException $e) {
+            $requiredPermissions = $e->getRequiredPermissions();
+        }
+
+        $this->assertEquals(['some-permission'], $requiredPermissions);
+    }
+
+    /** @test */
+    public function the_required_modules_can_be_fetched_from_the_exception()
+    {
+        Auth::login($this->testUser);
+
+        $requiredModules = [];
+
+        try {
+            $this->moduleMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-module');
+        } catch (UnauthorizedException $e) {
+            $requiredModules = $e->getRequiredModules();
+        }
+
+        $this->assertEquals(['some-module'], $requiredModules);
+    }
+
+    /** @test */
+    public function the_required_systems_can_be_showing_in_the_exception()
+    {
+        app('config')->set('code-acl.display_system_in_exception', true);
+
+        Auth::login($this->testUser);
+
+        $requiredSystems = [];
+
+        try {
+            $this->systemMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-permission');
+        } catch (UnauthorizedException $e) {
+            $requiredSystems = $e->getRequiredSystems();
+        }
+
+        $this->assertEquals(['some-permission'], $requiredSystems);
+    }
+
+    /** @test */
+    public function the_required_modules_can_be_showing_in_the_exception()
+    {
+        app('config')->set('code-acl.display_module_in_exception', true);
+
+        Auth::login($this->testUser);
+
+        $requiredModules = [];
+
+        try {
+            $this->moduleMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-module');
+        } catch (UnauthorizedException $e) {
+            $requiredModules = $e->getRequiredModules();
+        }
+
+        $this->assertEquals(['some-module'], $requiredModules);
+    }
+
+
+    /** @test */
+    public function the_required_roles_or_permissions_can_be_showing_in_the_exception()
+    {
+        app('config')->set('code-acl.display_permission_in_exception', true);
+        app('config')->set('code-acl.display_role_in_exception', true);
+
+        Auth::login($this->testUser);
+
+        $requiredPermissions = [];
+
+        try {
+            $this->roleOrPermissionMiddleware->handle(new Request(), function () {
+                return (new Response())->setContent(self::HTML);
+            }, 'some-permission-or-role');
+        } catch (UnauthorizedException $e) {
+            $requiredPermissions = $e->getRequiredPermissions();
+        }
+
+        $this->assertEquals(['some-permission-or-role'], $requiredPermissions);
     }
 
     protected function runMiddleware($middleware, $parameter, $guard = null)

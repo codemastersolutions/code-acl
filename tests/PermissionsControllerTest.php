@@ -8,7 +8,7 @@ use CodeMaster\CodeAcl\Http\Resources\PermissionsResource;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class PermissionControllerTest extends TestCase
+class PermissionsControllerTest extends TestCase
 {
     /** @test */
     public function it_is_retrieve_permissions_from_index_method()
@@ -67,6 +67,20 @@ class PermissionControllerTest extends TestCase
         $this->assertInstanceOf(PermissionsResource::class, $response->first());
         $this->assertInstanceOf(PermissionContract::class, $response->first()->first());
         $this->assertCount(3, $response);
+    }
+
+    /** @test */
+    public function it_is_retrieve_permissions_without_paginate_from_index_method()
+    {
+        app('config')->set('code-acl.models.permission.meta_data.pagination.per_page', null);
+
+        $controller = new PermissionsController();
+
+        $response = $controller->index();
+
+        $this->assertInstanceOf(AnonymousResourceCollection::class, $response);
+        $this->assertInstanceOf(PermissionsResource::class, $response->first());
+        $this->assertInstanceOf(PermissionContract::class, $response->first()->first());
     }
 
     /** @test */

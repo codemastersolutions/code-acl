@@ -19,7 +19,7 @@ class SystemMiddleware
             : explode('|', $system);
 
         if (! Auth::user()->hasAnySystem($systems)) {
-            throw UnauthorizedException::forSystem($systems);
+            throw UnauthorizedException::forSystems($systems);
         }
 
         return $next($request);

@@ -57,7 +57,9 @@ trait SetUpModel
          * @param $model
          */
             function ($model) {
-                $model->{self::$customKeyName} = (string)Uuid::uuid4();
+                if (self::$modelData['primary_key']['type'] === 'uuid') {
+                    $model->{self::$customKeyName} = (string)Uuid::uuid4();
+                }
             }
         );
     }

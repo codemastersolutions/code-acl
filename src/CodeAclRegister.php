@@ -2,8 +2,10 @@
 
 namespace CodeMaster\CodeAcl;
 
+use CodeMaster\CodeAcl\Contracts\Module as ModuleContract;
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
+use CodeMaster\CodeAcl\Contracts\System as SystemContract;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -20,10 +22,10 @@ class CodeAclRegister
     protected $cacheManager;
 
     /** @var string */
-    protected $permissionClass, $roleClass;
+    protected $permissionClass, $roleClass, $systemClass, $moduleClass;
 
     /** @var \Illuminate\Database\Eloquent\Collection */
-    protected $permissions;
+    protected $permissions, $modules, $systems;
 
     /** @var \DateInterval|int */
     public static $cacheExpirationTime;
@@ -43,6 +45,8 @@ class CodeAclRegister
     {
         $this->permissionClass = config('code-acl.models.permission.class');
         $this->roleClass = config('code-acl.models.role.class');
+        $this->systemClass = config('code-acl.models.system.class');
+        $this->moduleClass = config('code-acl.models.module.class');
         $this->cacheManager = $cacheManager;
         $this->initializeCache();
     }
@@ -81,6 +85,23 @@ class CodeAclRegister
     }
 
     /**
+     * Register the module check method on the gate.
+     * We resolve the Gate fresh here, for benefit of long-running instances.
+     *
+     * @return bool
+     */
+    public function registerModules(): bool
+    {
+        app(Gate::class)->before(function (Authorizable $user, string $ability) {
+            if (method_exists($user, 'checkModule') && $user->checkModule($ability)) {
+                return true;
+            }
+        });
+
+        return true;
+    }
+
+    /**
      * Register the permission check method on the gate.
      * We resolve the Gate fresh here, for benefit of long-running instances.
      *
@@ -92,25 +113,22 @@ class CodeAclRegister
             if (method_exists($user, 'checkPermission') && $user->checkPermission($ability)) {
                 return true;
             }
+        });
 
-            if (method_exists($user, 'roles')) {
-                $roles = $user->roles()->get();
+        return true;
+    }
 
-                $roles->map(function ($role) use ($ability) {
-                    if (empty($role)) {
-                        return null;
-                    }
-
-                    $localPermissions = $role->permissions()->get();
-
-                    $localPermissions->map(function ($permission) use ($ability) {
-                        if (empty($permission)) {
-                            return null;
-                        }
-
-                        return (($permission->slug === $ability) || ($permission->name === $ability));
-                    });
-                });
+    /**
+     * Register the system check method on the gate.
+     * We resolve the Gate fresh here, for benefit of long-running instances.
+     *
+     * @return bool
+     */
+    public function registerSystems(): bool
+    {
+        app(Gate::class)->before(function (Authorizable $user, string $ability) {
+            if (method_exists($user, 'checkSystem') && $user->checkSystem($ability)) {
+                return true;
             }
         });
 
@@ -155,6 +173,18 @@ class CodeAclRegister
     }
 
     /**
+     * Clear class modules.
+     * This is only intended to be called by the CodeAclServiceProvider on boot,
+     * so that long-running instances like Swoole don't keep old data in memory.
+     */
+    public function clearClassModules()
+    {
+        $this->modules = null;
+
+        return $this;
+    }
+
+    /**
      * Clear class permissions.
      * This is only intended to be called by the CodeAclServiceProvider on boot,
      * so that long-running instances like Swoole don't keep old data in memory.
@@ -167,6 +197,40 @@ class CodeAclRegister
     }
 
     /**
+     * Clear class roles.
+     * This is only intended to be called by the CodeAclServiceProvider on boot,
+     * so that long-running instances like Swoole don't keep old data in memory.
+     */
+    public function clearClassRoles()
+    {
+        $this->roles = null;
+
+        return $this;
+    }
+
+    /**
+     * Clear class systems.
+     * This is only intended to be called by the CodeAclServiceProvider on boot,
+     * so that long-running instances like Swoole don't keep old data in memory.
+     */
+    public function clearClassSystems()
+    {
+        $this->systems = null;
+
+        return $this;
+    }
+
+    /**
+     * Get an instance of the module class.
+     *
+     * @return \CodeMaster\CodeAcl\Contracts\Module
+     */
+    public function getModuleClass(): ModuleContract
+    {
+        return app($this->moduleClass);
+    }
+
+    /**
      * Get an instance of the permission class.
      *
      * @return \CodeMaster\CodeAcl\Contracts\Permission
@@ -174,6 +238,38 @@ class CodeAclRegister
     public function getPermissionClass(): PermissionContract
     {
         return app($this->permissionClass);
+    }
+
+    /**
+     * Get an instance of the role class.
+     *
+     * @return \CodeMaster\CodeAcl\Contracts\Role
+     */
+    public function getRoleClass(): RoleContract
+    {
+        return app($this->roleClass);
+    }
+
+    /**
+     * Get an instance of the system class.
+     *
+     * @return \CodeMaster\CodeAcl\Contracts\System
+     */
+    public function getSystemClass(): SystemContract
+    {
+        return app($this->systemClass);
+    }
+
+    /**
+     * Set an instance of the module class.
+     *
+     * @return self
+     */
+    public function setModuleClass($moduleClass)
+    {
+        $this->moduleClass = $moduleClass;
+
+        return $this;
     }
 
     /**
@@ -189,16 +285,6 @@ class CodeAclRegister
     }
 
     /**
-     * Get an instance of the role class.
-     *
-     * @return \CodeMaster\CodeAcl\Contracts\Role
-     */
-    public function getRoleClass(): RoleContract
-    {
-        return app($this->roleClass);
-    }
-
-    /**
      * Set an instance of the role class.
      *
      * @return self
@@ -206,6 +292,18 @@ class CodeAclRegister
     public function setRoleClass($roleClass)
     {
         $this->roleClass = $roleClass;
+
+        return $this;
+    }
+
+    /**
+     * Set an instance of the system class.
+     *
+     * @return self
+     */
+    public function setSystemClass($systemClass)
+    {
+        $this->systemClass = $systemClass;
 
         return $this;
     }

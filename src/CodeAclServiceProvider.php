@@ -2,11 +2,15 @@
 
 namespace CodeMaster\CodeAcl;
 
+use CodeMaster\CodeAcl\Contracts\Module as ModuleContract;
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
+use CodeMaster\CodeAcl\Contracts\System as SystemContract;
 use CodeMaster\CodeAcl\Contracts\User as UserContract;
+use CodeMaster\CodeAcl\Exceptions\ModuleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
+use CodeMaster\CodeAcl\Exceptions\SystemDoesNotExist;
 use CodeMaster\CodeAcl\Logging\Log;
 use CodeMaster\CodeAcl\Models\User;
 use Illuminate\Filesystem\Filesystem;
@@ -58,8 +62,8 @@ class CodeAclServiceProvider extends ServiceProvider
             Commands\CacheReset::class,
             Commands\CreateRole::class,
             Commands\CreatePermission::class,
-            // Commands\CreateModule::class,
-            // Commands\CreateSystem::class,
+            Commands\CreateModule::class,
+            Commands\CreateSystem::class,
             // Commands\Show::class,
         ]);
     }
@@ -74,6 +78,18 @@ class CodeAclServiceProvider extends ServiceProvider
         if (! method_exists(Route::class, 'macro')) { // Lumen
             return;
         }
+
+        Route::macro('module', function ($modules = []) {
+            if (! is_array($modules)) {
+                $modules = [$modules];
+            }
+
+            $modules = implode('|', $modules);
+
+            $this->middleware("module:$modules");
+
+            return $this;
+        });
 
         Route::macro('permission', function ($permissions = []) {
             if (! is_array($permissions)) {
@@ -98,6 +114,18 @@ class CodeAclServiceProvider extends ServiceProvider
 
             return $this;
         });
+
+        Route::macro('system', function ($systems = []) {
+            if (! is_array($systems)) {
+                $systems = [$systems];
+            }
+
+            $systems = implode('|', $systems);
+
+            $this->middleware("system:$systems");
+
+            return $this;
+        });
     }
 
     /**
@@ -109,6 +137,15 @@ class CodeAclServiceProvider extends ServiceProvider
     {
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+        });
+
+        Route::bind('module', function ($value) {
+            try {
+                $moduleModel = app(ModuleContract::class);
+                return Uuid::isValid($value) ? $moduleModel::findById($value) : $moduleModel::findBySlug($value);
+            } catch(ModuleDoesNotExist $e) {
+                abort(404);
+            }
         });
 
         Route::bind('permission', function ($value) {
@@ -125,6 +162,15 @@ class CodeAclServiceProvider extends ServiceProvider
                 $roleModel = app(RoleContract::class);
                 return Uuid::isValid($value) ? $roleModel::findById($value) : $roleModel::findBySlug($value);
             } catch(RoleDoesNotExist $e) {
+                abort(404);
+            }
+        });
+
+        Route::bind('system', function ($value) {
+            try {
+                $systemModel = app(SystemContract::class);
+                return Uuid::isValid($value) ? $systemModel::findById($value) : $systemModel::findBySlug($value);
+            } catch(SystemDoesNotExist $e) {
                 abort(404);
             }
         });
@@ -172,6 +218,11 @@ class CodeAclServiceProvider extends ServiceProvider
             ], 'codeacl-config');
 
             $this->publishes([
+                __DIR__.'/Database/Migrations/2014_10_12_113000_create_modules_tables.php' =>
+                    $this->getMigrationFileName(
+                        $filesystem,
+                        $this->app->config['code-acl.models.module.table'],
+                        '2014_10_12_113000'),
                 __DIR__.'/Database/Migrations/2014_10_12_111000_create_permissions_tables.php' =>
                     $this->getMigrationFileName(
                         $filesystem,
@@ -182,6 +233,11 @@ class CodeAclServiceProvider extends ServiceProvider
                         $filesystem,
                         $this->app->config['code-acl.models.role.table'],
                         '2014_10_12_112000'),
+                __DIR__.'/Database/Migrations/2014_10_12_114000_create_systems_tables.php' =>
+                    $this->getMigrationFileName(
+                        $filesystem,
+                        $this->app->config['code-acl.models.system.table'],
+                        '2014_10_12_114000'),
             ], 'codeacl-migrations');
         }
     }
@@ -199,10 +255,12 @@ class CodeAclServiceProvider extends ServiceProvider
             return;
         }
 
+        $this->app->bind(LogContract::class, Log::class);
+        $this->app->bind(ModuleContract::class, $models['module']['class']);
         $this->app->bind(PermissionContract::class, $models['permission']['class']);
         $this->app->bind(RoleContract::class, $models['role']['class']);
+        $this->app->bind(SystemContract::class, $models['system']['class']);
         $this->app->bind(UserContract::class, User::class);
-        $this->app->bind(LogContract::class, Log::class);
     }
 
     /**

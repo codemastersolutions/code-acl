@@ -69,6 +69,20 @@ class RolesControllerTest extends TestCase
     }
 
     /** @test */
+    public function it_is_retrieve_roles_without_paginate_from_index_method()
+    {
+        app('config')->set('code-acl.models.role.meta_data.pagination.per_page', null);
+
+        $controller = new RolesController();
+
+        $response = $controller->index();
+
+        $this->assertInstanceOf(AnonymousResourceCollection::class, $response);
+        $this->assertInstanceOf(RolesResource::class, $response->first());
+        $this->assertInstanceOf(RoleContract::class, $response->first()->first());
+    }
+
+    /** @test */
     public function it_throws_an_exception_when_the_config_not_loaded()
     {
         $this->expectException(Exception::class);

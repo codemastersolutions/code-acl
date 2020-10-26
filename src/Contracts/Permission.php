@@ -2,6 +2,8 @@
 
 namespace CodeMaster\CodeAcl\Contracts;
 
+use Illuminate\Database\Eloquent\Collection;
+
 interface Permission
 {
     /**
@@ -53,4 +55,11 @@ interface Permission
      * @return int
      */
     public function getPerPage();
+
+    /**
+     * Retrieve all stored permissions name
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getStoredNames(): Collection;
 }

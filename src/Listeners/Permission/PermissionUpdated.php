@@ -1,12 +1,12 @@
 <?php
 
-namespace CodeMaster\CodeAcl\Listeners;
+namespace CodeMaster\CodeAcl\Listeners\Permission;
 
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
-use CodeMaster\CodeAcl\Events\PermissionSaved as PermissionSavedEvent;
+use CodeMaster\CodeAcl\Events\Permission\PermissionUpdated as PermissionUpdatedEvent;
 use CodeMaster\CodeLog\Logging\Log;
 
-class PermissionSaved
+class PermissionUpdated
 {
     /** @var \CodeMaster\CodeAcl\Contracts\Permission $permission */
     public PermissionContract $permission;
@@ -24,11 +24,11 @@ class PermissionSaved
     /**
      * Handle the event.
      *
-     * @param  \CodeMaster\CodeAcl\Events\PermissionSaved $event
+     * @param  \CodeMaster\CodeAcl\Events\Permission\PermissionUpdated $event
      * @return void
      */
-    public function handle(PermissionSavedEvent $event)
+    public function handle(PermissionUpdatedEvent $event)
     {
-        Log::info('permission-created', ['permissions' => $event->permission->toArray()]);
+        Log::info('permission-updated', ['permissions' => $event->permission->toArray()]);
     }
 }

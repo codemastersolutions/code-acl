@@ -3,9 +3,9 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
-use CodeMaster\CodeAcl\Events\RoleDeleted;
-use CodeMaster\CodeAcl\Events\RoleSaved;
-use CodeMaster\CodeAcl\Events\RoleUpdated;
+use CodeMaster\CodeAcl\Events\Role\RoleDeleted;
+use CodeMaster\CodeAcl\Events\Role\RoleSaved;
+use CodeMaster\CodeAcl\Events\Role\RoleUpdated;
 use CodeMaster\CodeAcl\Exceptions\RoleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleException;
@@ -122,8 +122,8 @@ class Role extends Model implements RoleContract
     /**
      * @inheritDoc
      */
-    public static function getNames(): Collection
+    public static function getStoredNames(): Collection
     {
-        return self::all()->pluck('name');
+        return new Collection(self::all()->pluck('name'));
     }
 }

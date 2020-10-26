@@ -40,7 +40,6 @@
                 "CodeMaster\\CodeAcl\\CodeAclServiceProvider"
             ],
             "aliases": {
-                "CodeAcl": "CodeMaster\\CodeAcl\\Facades\\CodeAcl"
             }
         }
     },

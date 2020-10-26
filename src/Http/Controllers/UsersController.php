@@ -5,11 +5,14 @@ namespace CodeMaster\CodeAcl\Http\Controllers;
 use CodeMaster\CodeAcl\Contracts\User as UserContract;
 use CodeMaster\CodeAcl\Exceptions\ConfigNotLoaded;
 use CodeMaster\CodeAcl\Exceptions\UserModelNotFound;
+use CodeMaster\CodeAcl\Http\Requests\UserModulesRequest;
 use CodeMaster\CodeAcl\Http\Requests\UserPermissionsRequest;
 use CodeMaster\CodeAcl\Http\Requests\UserRolesRequest;
+use CodeMaster\CodeAcl\Http\Requests\UserSystemsRequest;
+use CodeMaster\CodeAcl\Http\Resources\ModulesResource;
 use CodeMaster\CodeAcl\Http\Resources\PermissionsResource;
 use CodeMaster\CodeAcl\Http\Resources\RolesResource;
-use Illuminate\Http\Request;
+use CodeMaster\CodeAcl\Http\Resources\SystemsResource;
 
 class UsersController extends BaseController
 {
@@ -17,10 +20,16 @@ class UsersController extends BaseController
     private static $model;
 
     /** @var array|null $permissionUserMetaData */
+    private static $moduleUserMetaData;
+
+    /** @var array|null $permissionUserMetaData */
     private static $permissionUserMetaData;
 
     /** @var array|null $roleUserMetaData */
     private static $roleUserMetaData;
+
+    /** @var array|null $systemUserMetaData */
+    private static $systemUserMetaData;
 
     /** @var array|null $orderByRole */
     private static $orderByRole;
@@ -28,20 +37,26 @@ class UsersController extends BaseController
     /** @var array|null $orderByPermission */
     private static $orderByPermission;
 
+    public const URL_MODULES = 'users/{user}/modules';
     public const URL_PERMISSIONS = 'users/{user}/permissions';
     public const URL_ROLES = 'users/{user}/roles';
+    public const URL_SYSTEMS = 'users/{user}/systems';
 
     public function __construct()
     {
-        self::$model = app(config('code-acl.defaults.user'));
-        self::$permissionUserMetaData = config('code-acl.models.user_has_permission.meta_data');
-        self::$roleUserMetaData = config('code-acl.models.user_has_role.meta_data');
+        $modelClass = config('code-acl.defaults.user');
 
-        if (empty(self::$model)) {
+        if (empty($modelClass)) {
             throw UserModelNotFound::config('config/code-acl.php');
         }
 
-        if (empty(self::$permissionUserMetaData) || empty(self::$roleUserMetaData)) {
+        self::$model = app($modelClass);
+        self::$moduleUserMetaData = config('code-acl.models.user_has_module.meta_data');
+        self::$permissionUserMetaData = config('code-acl.models.user_has_permission.meta_data');
+        self::$roleUserMetaData = config('code-acl.models.user_has_role.meta_data');
+        self::$systemUserMetaData = config('code-acl.models.user_has_system.meta_data');
+
+        if (empty(self::$permissionUserMetaData) || empty(self::$roleUserMetaData) || empty(self::$moduleUserMetaData) || empty(self::$systemUserMetaData)) {
             throw ConfigNotLoaded::config('config/code-acl.php');
         }
 
@@ -50,9 +65,27 @@ class UsersController extends BaseController
     }
 
     /**
+     * Give modules to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserModulesRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function giveModules(UserContract $user, UserModulesRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $user->giveModules($data['modules']);
+            return response()->json(['result' => true], 201);
+        } catch(\Exception $e) {
+            return response()->json(['result' => false, 'error' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
      * Give permissions to a user.
      *
-     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
      * @param \CodeMaster\CodeAcl\Http\Requests\UserPermissionsRequest $request
      * @return \Illuminate\Http\Response
      */
@@ -86,13 +119,54 @@ class UsersController extends BaseController
     }
 
     /**
-     * Get permissions assigned to a user.
+     * Give systems to a user.
      *
-     * @param \CodeMaster\CodeAcl\Contracts\Role $user
-     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @param \CodeMaster\CodeAcl\Contracts\System $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserSystemsRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function permissions(UserContract $user, Request $request)
+    public function giveSystems(UserContract $user, UserSystemsRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $user->giveSystems($data['systems']);
+            return response()->json(['result' => true], 201);
+        } catch(\Exception $e) {
+            return response()->json(['result' => false, 'error' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Get modules assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function modules(UserContract $user)
+    {
+        $perPage = per_page(self::$moduleUserMetaData);
+
+        $modules = $user->modules();
+
+        if (self::$orderByPermission && count(self::$orderByPermission) > 0) {
+            $modules = $modules->orderBy(
+                self::$orderByPermission['field'],
+                self::$orderByPermission['direction']
+            );
+        }
+
+        $modules = ($perPage > 0) ? $modules->paginate($perPage) : $modules->get();
+
+        return response()->json(ModulesResource::collection($modules));
+    }
+
+    /**
+     * Get permissions assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function permissions(UserContract $user)
     {
         $perPage = per_page(self::$permissionUserMetaData);
 
@@ -111,9 +185,27 @@ class UsersController extends BaseController
     }
 
     /**
+     * Revoke modules assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserModulesRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function revokeModules(UserContract $user, UserModulesRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $user->revokeModules($data['modules']);
+            return response()->noContent();
+        } catch(\Exception $e) {
+            return response()->json(['result' => false, 'error' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
      * Revoke permissions assigned to a user.
      *
-     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
      * @param \CodeMaster\CodeAcl\Http\Requests\UserPermissionsRequest $request
      * @return \Illuminate\Http\Response
      */
@@ -131,7 +223,7 @@ class UsersController extends BaseController
     /**
      * Revoke roles assigned to a user.
      *
-     * @param \CodeMaster\CodeAcl\Contracts\Role $user
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
      * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
      * @return \Illuminate\Http\Response
      */
@@ -147,10 +239,27 @@ class UsersController extends BaseController
     }
 
     /**
+     * Revoke systems assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function revokeSystems(UserContract $user, UserSystemsRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $user->revokeSystems($data['systems']);
+            return response()->noContent();
+        } catch(\Exception $e) {
+            return response()->json(['result' => false, 'error' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
      * Get roles assigned to a user.
      *
      * @param \CodeMaster\CodeAcl\Contracts\Role $user
-     * @param \CodeMaster\CodeAcl\Http\Requests\UserRolesRequest $request
      * @return \Illuminate\Http\Response
      */
     public function roles(UserContract $user)
@@ -169,5 +278,29 @@ class UsersController extends BaseController
         $roles = ($perPage > 0) ? $roles->paginate($perPage) : $roles->get();
 
         return response()->json(RolesResource::collection($roles));
+    }
+
+    /**
+     * Get systems assigned to a user.
+     *
+     * @param \CodeMaster\CodeAcl\Contracts\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function systems(UserContract $user)
+    {
+        $perPage = per_page(self::$roleUserMetaData);
+
+        $systems = $user->systems();
+
+        if (self::$orderByRole && count(self::$orderByRole) > 0) {
+            $systems = $systems->orderBy(
+                self::$orderByRole['field'],
+                self::$orderByRole['direction']
+            );
+        }
+
+        $systems = ($perPage > 0) ? $systems->paginate($perPage) : $systems->get();
+
+        return response()->json(SystemsResource::collection($systems));
     }
 }
