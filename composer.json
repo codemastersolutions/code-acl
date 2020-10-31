@@ -50,12 +50,12 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.4",
-        "codemastersolutions/code-log": "^0.1.0",
+        "codemastersolutions/code-log": "^0.1.1",
         "illuminate/auth": "^8.6",
         "illuminate/container": "^8.6",
         "illuminate/contracts": "^8.6",
         "illuminate/database": "^8.6",
-        "spatie/laravel-sluggable": "^2.5"
+        "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
         "orchestra/testbench": "^6.2",
@@ -63,12 +63,6 @@
         "predis/predis": "^1.1",
         "spatie/phpunit-watcher": "^1.22"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "https://gilsongabriel:fc6cfbfa05c61f82e29a52c664724f3be6128259@github.com/codemastersolutions/code-log.git"
-        }
-    ],
     "scripts": {
         "test": "vendor/bin/phpunit"
     }
