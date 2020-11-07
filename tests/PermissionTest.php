@@ -3,6 +3,7 @@
 namespace CodeMaster\CodeAcl\Test;
 
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
+use CodeMaster\CodeAcl\Contracts\Role;
 use CodeMaster\CodeAcl\Exceptions\PermissionAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionException;
@@ -140,5 +141,13 @@ class PermissionTest extends TestCase
         $names = $class->getStoredNames();
 
         $this->assertInstanceOf(Collection::class, $names);
+    }
+
+    /** @test */
+    public function it_is_get_users_from_a_permission()
+    {
+        $users = $this->testInsertPermission->users;
+
+        $this->assertInstanceOf(Collection::class, $users);
     }
 }

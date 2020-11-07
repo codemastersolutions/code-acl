@@ -55,6 +55,7 @@
         "illuminate/container": "^8.6",
         "illuminate/contracts": "^8.6",
         "illuminate/database": "^8.6",
+        "rebing/graphql-laravel": "^5.1",
         "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {

@@ -3,12 +3,15 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Module as ModuleContract;
+use CodeMaster\CodeAcl\Events\Module\ModuleCreated;
 use CodeMaster\CodeAcl\Events\Module\ModuleDeleted;
+use CodeMaster\CodeAcl\Events\Module\ModuleRetrieved;
 use CodeMaster\CodeAcl\Events\Module\ModuleSaved;
 use CodeMaster\CodeAcl\Events\Module\ModuleUpdated;
 use CodeMaster\CodeAcl\Exceptions\ModuleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\ModuleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\ModuleException;
+use CodeMaster\CodeAcl\Traits\HasUsers;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,14 +19,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model implements ModuleContract
 {
-    use SetUpModel, Sluggable;
+    use SetUpModel, Sluggable, HasUsers;
 
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [
+        'created' => ModuleCreated::class,
+        'deleted' => ModuleDeleted::class,
+        'retrieved' => ModuleRetrieved::class,
         'saved' => ModuleSaved::class,
         'updated' => ModuleUpdated::class,
-        'deleted' => ModuleDeleted::class,
     ];
 
     /**

@@ -24,11 +24,11 @@ class SystemSaved
     /**
      * Handle the event.
      *
-     * @param \CodeMaster\CodeAcl\Events\System\SystemSaved $event
+     * @param  \CodeMaster\CodeAcl\Events\System\SystemSaved $event
      * @return void
      */
     public function handle(SystemSavedEvent $event)
     {
-        Log::info('system-created', ['systems' => $event->system->toArray()]);
+        Log::info('system-saved', ['systems' => $event->system->toArray()]);
     }
 }

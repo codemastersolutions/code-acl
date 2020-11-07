@@ -3,6 +3,7 @@
 namespace CodeMaster\CodeAcl\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 interface Permission
 {
@@ -62,4 +63,11 @@ interface Permission
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getStoredNames(): Collection;
+
+    /**
+     * A model may have multiple direct permissions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations
+     */
+    public function users(): BelongsToMany;
 }

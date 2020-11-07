@@ -24,11 +24,11 @@ class RoleSaved
     /**
      * Handle the event.
      *
-     * @param  \CodeMaster\CodeAcl\Events\RoleSaved $event
+     * @param  \CodeMaster\CodeAcl\Events\Role\RoleSaved $event
      * @return void
      */
     public function handle(RoleSavedEvent $event)
     {
-        Log::info('role-created', ['roles' => $event->role->toArray()]);
+        Log::info('role-saved', ['roles' => $event->role->toArray()]);
     }
 }

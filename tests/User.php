@@ -24,9 +24,19 @@ class User extends Model implements AuthorizableContract, AuthenticatableContrac
 
     protected $fillable = ['id', 'email'];
 
-    public function convertToModels(Collection $permissions)
+    public function convertToPermissionsModels(Collection $permissions)
     {
         return $this->convertToPermissionModels($permissions);
+    }
+
+    public function convertToSystemsModels(Collection $systems)
+    {
+        return $this->convertToSystemModels($systems);
+    }
+
+    public function convertToModulesModels(Collection $modules)
+    {
+        return $this->convertToModuleModels($modules);
     }
 
     public static function boot()

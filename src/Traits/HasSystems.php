@@ -82,7 +82,6 @@ trait HasSystems
      *
      * @param string|int|\CodeMaster\CodeAcl\Contracts\System $system
      * @return bool
-     * @throws \CodeMaster\CodeAcl\Exceptions\SystemDoesNotExist
      */
     public function checkSystem($system): bool
     {
@@ -239,14 +238,14 @@ trait HasSystems
      */
     public function hasSystem($system): bool
     {
-        $system = $this->getStoredSystems($system);
+        if (method_exists($this, 'systems') && !empty($system)) {
+            $system = $this->getStoredSystems($system);
 
-        if (! $system instanceof SystemContract) {
-            return false;
+            return $this->systems()->get()
+                        ->contains(config($this->system_key_name), $system->id);
         }
 
-        return $this->systems()->get()
-                    ->contains(config($this->system_key_name), $system->id);
+        return false;
     }
 
     /**

@@ -241,14 +241,14 @@ trait HasModules
      */
     public function hasModule($module): bool
     {
-        $module = $this->getStoredModules($module);
+        if (method_exists($this, 'modules') && !empty($module)) {
+            $module = $this->getStoredModules($module);
 
-        if (! $module instanceof ModuleContract) {
-            return false;
+            return $this->modules()->get()
+                        ->contains(config($this->module_key_name), $module->id);
         }
 
-        return $this->modules()->get()
-                    ->contains(config($this->module_key_name), $module->id);
+        return false;
     }
 
     /**

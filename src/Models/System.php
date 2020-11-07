@@ -3,12 +3,15 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\System as SystemContract;
+use CodeMaster\CodeAcl\Events\System\SystemCreated;
 use CodeMaster\CodeAcl\Events\System\SystemDeleted;
+use CodeMaster\CodeAcl\Events\System\SystemRetrieved;
 use CodeMaster\CodeAcl\Events\System\SystemSaved;
 use CodeMaster\CodeAcl\Events\System\SystemUpdated;
 use CodeMaster\CodeAcl\Exceptions\SystemAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\SystemDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\SystemException;
+use CodeMaster\CodeAcl\Traits\HasUsers;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,14 +19,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class System extends Model implements SystemContract
 {
-    use SetUpModel, Sluggable;
+    use SetUpModel, Sluggable, HasUsers;
 
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [
+        'created' => SystemCreated::class,
+        'deleted' => SystemDeleted::class,
+        'retrieved' => SystemRetrieved::class,
         'saved' => SystemSaved::class,
         'updated' => SystemUpdated::class,
-        'deleted' => SystemDeleted::class,
     ];
 
     /**

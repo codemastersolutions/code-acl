@@ -157,7 +157,7 @@ trait HasPermissions
      * @return \CodeMaster\CodeAcl\Contracts\Permission|\CodeMaster\CodeAcl\Contracts\Permission[]|\Illuminate\Database\Eloquent\Collection
      * @throws \CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist
      */
-    protected function getStoredPermissions($permissions)
+    public function getStoredPermissions($permissions)
     {
         $permissionClass = $this->getPermissionInstance();
         $isUuid = is_string($permissions) ? Uuid::isValid($permissions) : false;
@@ -215,7 +215,7 @@ trait HasPermissions
             ->map->id
             ->all();
 
-            $model = $this->getModel();
+        $model = $this->getModel();
 
         if ($model->exists) {
             $this->permissions()->syncWithoutDetaching($permissions);
@@ -312,14 +312,15 @@ trait HasPermissions
      */
     public function hasDirectPermission($permission): bool
     {
-        $permission = $this->getStoredPermissions($permission);
+        try {
+            $permission = $this->getStoredPermissions($permission);
 
-        if (! $permission instanceof PermissionContract) {
+            return $this->getAllPermissions()
+                        ->contains(config($this->permission_key_name), $permission->id);
+        } catch(\Exception $e) {
             return false;
         }
 
-        return $this->getAllPermissions()
-                    ->contains(config($this->permission_key_name), $permission->id);
     }
 
     /**

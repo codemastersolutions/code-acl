@@ -29,6 +29,6 @@ class PermissionSaved
      */
     public function handle(PermissionSavedEvent $event)
     {
-        Log::info('permission-created', ['permissions' => $event->permission->toArray()]);
+        Log::info('permission-saved', ['permissions' => $event->permission->toArray()]);
     }
 }

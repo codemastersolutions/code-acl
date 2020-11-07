@@ -86,7 +86,7 @@ class HasPermissionsTest extends TestCase
     {
         $permissions = app(Permission::class)::all();
 
-        $permissionsArray = app(User::class)->convertToModels($permissions);
+        $permissionsArray = app(User::class)->convertToPermissionsModels($permissions);
 
         $this->assertIsArray($permissionsArray);
     }
