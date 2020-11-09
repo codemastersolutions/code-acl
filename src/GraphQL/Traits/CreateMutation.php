@@ -25,7 +25,7 @@ trait CreateMutation
         ];
     }
 
-    protected function rules(array $args = []): array
+    protected function rules(): array
     {
         return [
             'name' => ['required', 'max:50'],

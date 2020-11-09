@@ -70,6 +70,7 @@ trait BaseMutation
 
                 return $data;
             } catch(\Exception $e) {
+                return [];
             }
         }
 

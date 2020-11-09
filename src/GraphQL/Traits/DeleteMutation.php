@@ -22,7 +22,7 @@ trait DeleteMutation
         ];
     }
 
-    protected function rules(array $args = []): array
+    protected function rules(): array
     {
         return [
             'idOrSlug' => ['required'],
