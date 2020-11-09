@@ -26,7 +26,7 @@ class ModulesRouteTest extends TestCase
         $response = $this->get($this->urlModules);
         $response->assertStatus(200);
         $response->assertSuccessful();
-        $this->assertEquals('New Module', $response['data'][0]['name']);
+        $this->assertEquals('New Module 1', $response['data'][0]['name']);
     }
 
     /** @test */
