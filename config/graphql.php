@@ -16,20 +16,27 @@ return [
     'default_schema' => 'default',
 
     'schemas' => [
-        'code-acl' => [
+        'default' => [
+            'query' => [],
+            'mutation' => [],
+            'middleware' => [],
+            'method' => ['get', 'post'],
+        ],
+
+        'code_acl' => [
             'query' => [
                 'module' => \CodeMaster\CodeAcl\GraphQL\Queries\ModuleQuery::class,
                 'modules' => \CodeMaster\CodeAcl\GraphQL\Queries\ModulesQuery::class,
-                'modules_paginate' => \CodeMaster\CodeAcl\GraphQL\Queries\ModulesPaginateQuery::class,
+                'modules_paginated' => \CodeMaster\CodeAcl\GraphQL\Queries\ModulesPaginatedQuery::class,
                 'permission' => \CodeMaster\CodeAcl\GraphQL\Queries\PermissionQuery::class,
                 'permissions' => \CodeMaster\CodeAcl\GraphQL\Queries\PermissionsQuery::class,
-                'permissions_paginate' => \CodeMaster\CodeAcl\GraphQL\Queries\PermissionsPaginateQuery::class,
+                'permissions_paginated' => \CodeMaster\CodeAcl\GraphQL\Queries\PermissionsPaginatedQuery::class,
                 'role' => \CodeMaster\CodeAcl\GraphQL\Queries\RoleQuery::class,
                 'roles' => \CodeMaster\CodeAcl\GraphQL\Queries\RolesQuery::class,
-                'roles_paginate' => \CodeMaster\CodeAcl\GraphQL\Queries\RolesPaginateQuery::class,
+                'roles_paginated' => \CodeMaster\CodeAcl\GraphQL\Queries\RolesPaginatedQuery::class,
                 'system' => \CodeMaster\CodeAcl\GraphQL\Queries\SystemQuery::class,
                 'systems' => \CodeMaster\CodeAcl\GraphQL\Queries\SystemsQuery::class,
-                'systems_paginate' => \CodeMaster\CodeAcl\GraphQL\Queries\SystemsPaginateQuery::class,
+                'systems_paginated' => \CodeMaster\CodeAcl\GraphQL\Queries\SystemsPaginatedQuery::class,
             ],
             'mutation' => [
                 'create_module' => \CodeMaster\CodeAcl\GraphQL\Mutations\ModuleCreateMutation::class,

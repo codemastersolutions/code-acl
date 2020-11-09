@@ -2,25 +2,20 @@
 
 declare(strict_types=1);
 
-namespace CodeMaster\CodeAcl\GraphQL\Queries;
+namespace CodeMaster\CodeAcl\GraphQL\Traits;
 
 use Closure;
-use CodeMaster\CodeAcl\Contracts\Permission;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Facades\GraphQL;
-use Rebing\GraphQL\Support\Query;
 
-class PermissionsPaginateQuery extends Query
+trait ItemsPaginatedQuery
 {
-    protected $attributes = [
-        'name' => 'PermissionsPaginate',
-        'description' => 'Retorna um coleção de permissões com paginação'
-    ];
+    use BaseQuery;
 
     public function type(): Type
     {
-        return GraphQL::paginate('Permission');
+        return GraphQL::paginate(class_basename(\get_class($this->model)));
     }
 
     public function args(): array
@@ -41,11 +36,9 @@ class PermissionsPaginateQuery extends Query
     {
         $fields = $getSelectFields();
 
-        $model = app(Permission::class);
-
-        return $model::select($fields->getSelect())
+        return $this->model::select($fields->getSelect())
                 ->with($fields->getRelations())
                 ->orderBy('created_at', 'desc')
-                ->paginate($args['per_page'] ?? $model->perPage, ['*'], 'page', $args['page'] ?? 1);
+                ->paginate($args['per_page'] ?? $this->model->perPage, ['*'], 'page', $args['page'] ?? 1);
     }
 }

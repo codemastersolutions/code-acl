@@ -7,6 +7,7 @@ use CodeMaster\CodeAcl\Contracts\Role;
 use CodeMaster\CodeAcl\Exceptions\PermissionAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionException;
+use CodeMaster\CodeAcl\Models\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Ramsey\Uuid\Uuid;
 
