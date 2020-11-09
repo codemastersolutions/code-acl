@@ -3,6 +3,7 @@
 namespace CodeMaster\CodeAcl\Test;
 
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
+use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleException;
@@ -140,5 +141,54 @@ class RoleTest extends TestCase
         $names = $class->getStoredNames();
 
         $this->assertInstanceOf(Collection::class, $names);
+    }
+
+    /** @test */
+    public function it_is_get_stored_permisssions_from_array_of_permissions()
+    {
+        $permissionsArray = [
+            $this->testInsertPermission->id,
+            $this->testEditPermission->slug
+        ];
+
+        $permissions = app(RoleContract::class)->getStoredPermissions($permissionsArray);
+
+        $this->assertInstanceOf(Collection::class, $permissions);
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_permissions_not_exists()
+    {
+        $permissionsArray = [];
+
+        $this->expectException(PermissionDoesNotExist::class);
+
+        app(RoleContract::class)->getStoredPermissions($permissionsArray);
+    }
+
+    /** @test */
+    public function it_get_false_for_isnt_has_permission()
+    {
+        $hasPermission = app(RoleContract::class)->hasPermission([]);
+
+        $this->assertFalse($hasPermission);
+    }
+
+    /** @test */
+    public function it_get_false_for_isnt_exists_direct_permission()
+    {
+        $hasPermission = app(RoleContract::class)->hasDirectPermission([]);
+
+        $this->assertFalse($hasPermission);
+    }
+
+    /** @test */
+    public function it_is_has_any_permission_in_any_role()
+    {
+        $hasPermission = $this->testUser::hasAnyPermissionInRole($this->testCreatorRole, $this->testInsertNews->id);
+        $this->assertTrue($hasPermission);
+
+        $hasPermission = $this->testUser::hasAnyPermissionInRole($this->testCreatorRole, '');
+        $this->assertFalse($hasPermission);
     }
 }

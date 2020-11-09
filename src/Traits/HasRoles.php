@@ -179,7 +179,7 @@ trait HasRoles
      * @return \CodeMaster\CodeAcl\Contracts\Role|\CodeMaster\CodeAcl\Contracts\Role[]|\Illuminate\Database\Eloquent\Collection
      * @throws \CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist
      */
-    protected function getStoredRoles($roles)
+    public function getStoredRoles($roles)
     {
         $roleClass = $this->getRoleInstance();
         $isUuid = is_string($roles) ? Uuid::isValid($roles) : false;
@@ -264,7 +264,7 @@ trait HasRoles
      * @return bool
      * @throws \Exception
      */
-    public static function hasAnyPermissionInAnyRole(RoleContract $role, ...$permissions): bool
+    public static function hasAnyPermissionInRole(RoleContract $role, ...$permissions): bool
     {
         $permissions = collect($permissions)->flatten();
 

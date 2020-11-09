@@ -3,12 +3,15 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Permission as PermissionContract;
+use CodeMaster\CodeAcl\Events\Permission\PermissionCreated;
 use CodeMaster\CodeAcl\Events\Permission\PermissionDeleted;
+use CodeMaster\CodeAcl\Events\Permission\PermissionRetrieved;
 use CodeMaster\CodeAcl\Events\Permission\PermissionSaved;
 use CodeMaster\CodeAcl\Events\Permission\PermissionUpdated;
 use CodeMaster\CodeAcl\Exceptions\PermissionAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\PermissionDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\PermissionException;
+use CodeMaster\CodeAcl\Traits\HasUsers;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use CodeMaster\CodeAcl\Traits\RefreshesCodeAclCache;
@@ -18,14 +21,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Permission extends Model implements PermissionContract
 {
-    use SetUpModel, Sluggable, RefreshesCodeAclCache;
+    use SetUpModel, Sluggable, RefreshesCodeAclCache, HasUsers;
 
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [
+        'created' => PermissionCreated::class,
+        'deleted' => PermissionDeleted::class,
+        'retrieved' => PermissionRetrieved::class,
         'saved' => PermissionSaved::class,
         'updated' => PermissionUpdated::class,
-        'deleted' => PermissionDeleted::class,
     ];
 
     /**

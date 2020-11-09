@@ -3,13 +3,16 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\Role as RoleContract;
+use CodeMaster\CodeAcl\Events\Role\RoleCreated;
 use CodeMaster\CodeAcl\Events\Role\RoleDeleted;
+use CodeMaster\CodeAcl\Events\Role\RoleRetrieved;
 use CodeMaster\CodeAcl\Events\Role\RoleSaved;
 use CodeMaster\CodeAcl\Events\Role\RoleUpdated;
 use CodeMaster\CodeAcl\Exceptions\RoleAlreadyExists;
 use CodeMaster\CodeAcl\Exceptions\RoleDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\RoleException;
 use CodeMaster\CodeAcl\Traits\HasPermissions;
+use CodeMaster\CodeAcl\Traits\HasUsers;
 use CodeMaster\CodeAcl\Traits\SetUpModel;
 use CodeMaster\CodeAcl\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,14 +20,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model implements RoleContract
 {
-    use SetUpModel, Sluggable, HasPermissions;
+    use SetUpModel, Sluggable, HasPermissions, HasUsers;
 
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [
+        'created' => RoleCreated::class,
+        'deleted' => RoleDeleted::class,
+        'retrieved' => RoleRetrieved::class,
         'saved' => RoleSaved::class,
         'updated' => RoleUpdated::class,
-        'deleted' => RoleDeleted::class,
     ];
 
     /**

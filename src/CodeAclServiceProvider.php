@@ -49,6 +49,7 @@ class CodeAclServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
 
         $this->mergeConfigFrom(__DIR__.'/../config/code-acl.php', 'code-acl');
+        $this->mergeConfigFrom(__DIR__.'/../config/graphql.php', 'graphql');
     }
 
     /**
@@ -215,6 +216,10 @@ class CodeAclServiceProvider extends ServiceProvider
         if (function_exists('config_path')) { // function not available and 'publish' not relevant in Lumen
             $this->publishes([
                 __DIR__.'/../config/code-acl.php' => config_path('code-acl.php'),
+            ], 'codeacl-config');
+
+            $this->publishes([
+                __DIR__.'/../config/graphql.php' => config_path('graphql.php'),
             ], 'codeacl-config');
 
             $this->publishes([

@@ -26,7 +26,7 @@ class SystemsRouteTest extends TestCase
         $response = $this->get($this->urlSystems);
         $response->assertStatus(200);
         $response->assertSuccessful();
-        $this->assertEquals('New System', $response['data'][0]['name']);
+        $this->assertEquals('New System 1', $response['data'][0]['name']);
     }
 
     /** @test */

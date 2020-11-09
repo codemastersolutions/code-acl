@@ -401,7 +401,6 @@ class MiddlewareTest extends TestCase
         $this->assertEquals(['some-module'], $requiredModules);
     }
 
-
     /** @test */
     public function the_required_roles_or_permissions_can_be_showing_in_the_exception()
     {

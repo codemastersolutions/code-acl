@@ -29,6 +29,6 @@ class ModuleSaved
      */
     public function handle(ModuleSavedEvent $event)
     {
-        Log::info('module-created', ['modules' => $event->module->toArray()]);
+        Log::info('module-saved', ['modules' => $event->module->toArray()]);
     }
 }

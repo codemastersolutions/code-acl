@@ -58,8 +58,11 @@ abstract class TestCase extends Orchestra
         $this->testUser->givePermissions($this->testEditPermission->name);
         $this->testUser->givePermissions($this->testDeletePermission->name);
         $this->testUser->givePermissions($this->testUpdatePermission->name);
+        $this->testCreatorRole->givePermissions($this->testInsertNews->name);
         $this->testUser->giveRoles($this->testManangerRole);
         $this->testUser1->givePermissions('insert', 'delete');
+        $this->testUser->giveSystems($this->testSystem->id);
+        $this->testUser->giveModules($this->testModule->id);
         $this->testSupervisorRole->givePermissions($this->testEditNews->slug, $this->testEditPermission->slug);
     }
 
@@ -114,6 +117,16 @@ abstract class TestCase extends Orchestra
             $table->uuid('soft_deleting_user_id');
         });
 
+        $app['db']->connection()->getSchemaBuilder()->create('system_soft_deleting_user', function (Blueprint $table) {
+            $table->uuid('system_id');
+            $table->uuid('soft_deleting_user_id');
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('module_soft_deleting_user', function (Blueprint $table) {
+            $table->uuid('module_id');
+            $table->uuid('soft_deleting_user_id');
+        });
+
         if (Cache::getStore() instanceof \Illuminate\Cache\DatabaseStore ||
             $app[CodeAclRegister::class]->getCacheStore() instanceof \Illuminate\Cache\DatabaseStore) {
             $this->createCacheTable();
@@ -149,7 +162,9 @@ abstract class TestCase extends Orchestra
         $app[RoleContract::class]->create(['name' => 'Mananger']);
         $app[RoleContract::class]->create(['name' => 'Role 1']);
         $app[RoleContract::class]->create(['name' => 'Role 2']);
+        $app[ModuleContract::class]->create(['name' => 'New Module 1']);
         $app[ModuleContract::class]->create(['name' => 'New Module']);
+        $app[SystemContract::class]->create(['name' => 'New System 1']);
         $app[SystemContract::class]->create(['name' => 'New System']);
     }
 
