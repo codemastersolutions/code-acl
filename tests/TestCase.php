@@ -162,10 +162,10 @@ abstract class TestCase extends Orchestra
         $app[RoleContract::class]->create(['name' => 'Mananger']);
         $app[RoleContract::class]->create(['name' => 'Role 1']);
         $app[RoleContract::class]->create(['name' => 'Role 2']);
-        $app[ModuleContract::class]->create(['name' => 'New Module']);
         $app[ModuleContract::class]->create(['name' => 'New Module 1']);
-        $app[SystemContract::class]->create(['name' => 'New System']);
+        $app[ModuleContract::class]->create(['name' => 'New Module']);
         $app[SystemContract::class]->create(['name' => 'New System 1']);
+        $app[SystemContract::class]->create(['name' => 'New System']);
     }
 
     /**
