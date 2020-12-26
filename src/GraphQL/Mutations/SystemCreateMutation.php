@@ -14,6 +14,13 @@ class SystemCreateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'SystemCreateMutation',
-        'description' => 'Insere um sistema'
+        'description' => 'Persiste um sistema no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome do sistema a ser persistido';
+        return $args;
+    }
 }

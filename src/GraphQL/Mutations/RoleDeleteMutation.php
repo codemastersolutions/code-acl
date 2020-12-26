@@ -14,6 +14,13 @@ class RoleDeleteMutation extends Mutation
 
     protected $attributes = [
         'name' => 'RoleDeleteMutation',
-        'description' => 'Exclui um papel'
+        'description' => 'Exclui um papel do banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['idOrSlug']['description'] = 'ID or Slug do papel a ser excluído';
+        return $args;
+    }
 }

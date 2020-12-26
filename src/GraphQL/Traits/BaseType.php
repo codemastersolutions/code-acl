@@ -22,6 +22,10 @@ trait BaseType
                 'description' => 'Data de criação',
                 'alias' => 'created_at',
             ],
+            'email' => [
+                'type' => Type::string(),
+                'description' => 'E-mail'
+            ],
             'id' => [
                 'type' => Type::nonNull(Type::string()),
                 'description' => 'Identificador único no formato UUID',
@@ -30,9 +34,25 @@ trait BaseType
                 'type' => Type::string(),
                 'description' => 'Nome',
             ],
+            'modules' => [
+                'type' => Type::listOf(GraphQL::type('Module')),
+                'description' => 'Lista de módulos vinculados',
+            ],
+            'permissions' => [
+                'type' => Type::listOf(GraphQL::type('Permission')),
+                'description' => 'Lista de permissões vinculados',
+            ],
+            'roles' => [
+                'type' => Type::listOf(GraphQL::type('Role')),
+                'description' => 'Lista de papéis vinculados',
+            ],
             'slug' => [
                 'type' => Type::string(),
                 'description' => 'Identificador único no formato slug',
+            ],
+            'systems' => [
+                'type' => Type::listOf(GraphQL::type('System')),
+                'description' => 'Lista de sistemas vinculados',
             ],
             'updatedAt' => [
                 'type' => Type::string(),
@@ -45,4 +65,11 @@ trait BaseType
             ],
         ];
     }
+
+    // protected function resolveEmailField($root, $args)
+    // {
+    //     if (isset($root->email)) {
+    //         return strtolower($root->email);
+    //     }
+    // }
 }

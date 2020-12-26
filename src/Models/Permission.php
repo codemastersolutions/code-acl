@@ -25,14 +25,6 @@ class Permission extends Model implements PermissionContract
 
     protected $fillable = ['name'];
 
-    protected $dispatchesEvents = [
-        'created' => PermissionCreated::class,
-        'deleted' => PermissionDeleted::class,
-        'retrieved' => PermissionRetrieved::class,
-        'saved' => PermissionSaved::class,
-        'updated' => PermissionUpdated::class,
-    ];
-
     /**
      * Model constructor
      *
@@ -42,6 +34,7 @@ class Permission extends Model implements PermissionContract
     {
         self::$modelData = config('code-acl.models.permission');
 
+        $this->dispatchesEvents = self::$modelData['events'];
         $this->setUp();
 
         parent::__construct($attributes);

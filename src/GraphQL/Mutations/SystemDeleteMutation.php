@@ -14,6 +14,13 @@ class SystemDeleteMutation extends Mutation
 
     protected $attributes = [
         'name' => 'SystemDeleteMutation',
-        'description' => 'Exclui um sistema'
+        'description' => 'Exclui um sistema do banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['idOrSlug']['description'] = 'ID or Slug do sistema a ser excluído';
+        return $args;
+    }
 }

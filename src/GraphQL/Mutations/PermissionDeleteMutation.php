@@ -14,6 +14,13 @@ class PermissionDeleteMutation extends Mutation
 
     protected $attributes = [
         'name' => 'PermissionDeleteMutation',
-        'description' => 'Exclui uma permissão'
+        'description' => 'Exclui uma permissão do banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['idOrSlug']['description'] = 'ID or Slug da permissão a ser excluída';
+        return $args;
+    }
 }

@@ -16,4 +16,17 @@ class ModulesPaginatedQuery extends Query
         'name' => 'ModulesPaginatedQuery',
         'description' => 'Retorna um coleção de módulos com paginação'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['search_term']['description'] = $args['search_term']['description'] . ' de Módulos.';
+        $args['search_field']['description'] = $args['search_field']['description'] . ' de Módulos.';
+        return $args;
+    }
+
+    public function rules(array $args = []): array
+    {
+        return $this->baseRules();
+    }
 }

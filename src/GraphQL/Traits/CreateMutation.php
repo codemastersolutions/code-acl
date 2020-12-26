@@ -16,19 +16,29 @@ trait CreateMutation
         return GraphQL::type(class_basename(\get_class($this->model)));
     }
 
-    public function args(): array
+    public function baseArgs(): array
     {
         return [
             'name' => [
-                'type' => Type::nonNull(Type::string())
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'Nome'
             ]
         ];
     }
 
-    protected function rules(): array
+    protected function rules(array $args = []): array
     {
         return [
-            'name' => ['required', 'max:50'],
+            'name' => ['required', 'string', 'max:50'],
+        ];
+    }
+
+    public function validationErrorMessages(array $args = []): array
+    {
+        return [
+            'name.required' => 'Please enter your full :attribute',
+            'name.string' => 'Your :attribute must be a valid string',
+            'name.max' => 'The :attribute may not be greater than :max characters.',
         ];
     }
 

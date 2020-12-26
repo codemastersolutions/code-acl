@@ -122,7 +122,7 @@ trait HasModules
      *
      * @return $this
      */
-    private function detachModules(...$modules)
+    private function detachModules($modules)
     {
         $this->modules()->detach($this->getStoredModules($modules));
 

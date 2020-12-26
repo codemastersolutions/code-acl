@@ -14,6 +14,14 @@ class ModuleUpdateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'ModuleUpdateMutation',
-        'description' => 'Atualiza um módulo'
+        'description' => 'Atualiza um módulo no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome do módulo a ser atualizado';
+        $args['idOrSlug']['description'] = 'Id ou Slug do módulo a ser atualizado';
+        return $args;
+    }
 }

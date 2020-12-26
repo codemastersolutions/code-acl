@@ -17,4 +17,16 @@ class RoleType extends GraphQLType
         'description' => 'Tipo para um papel',
         'model' => Role::class
     ];
+
+    public function fields(): array
+    {
+        $fields = $this->getBaseFields();
+
+        unset($fields['email']);
+        unset($fields['modules']);
+        unset($fields['roles']);
+        unset($fields['systems']);
+
+        return $fields;
+    }
 }

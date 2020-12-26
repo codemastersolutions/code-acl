@@ -14,6 +14,13 @@ class ModuleDeleteMutation extends Mutation
 
     protected $attributes = [
         'name' => 'ModuleDeleteMutation',
-        'description' => 'Exclui um módulo'
+        'description' => 'Exclui um módulo do banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['idOrSlug']['description'] = 'ID or Slug do módulo a ser excluído';
+        return $args;
+    }
 }

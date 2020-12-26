@@ -24,10 +24,10 @@ class PermissionType extends GraphQLType
     {
         $fields = $this->getBaseFields();
 
-        $fields['roles'] = [
-            'type' => Type::listOf(GraphQL::type('Role')),
-            'description' => 'Lista de papéis vinculados'
-        ];
+        unset($fields['email']);
+        unset($fields['modules']);
+        unset($fields['permissions']);
+        unset($fields['systems']);
 
         return $fields;
     }

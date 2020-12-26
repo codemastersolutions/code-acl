@@ -23,14 +23,6 @@ class Module extends Model implements ModuleContract
 
     protected $fillable = ['name'];
 
-    protected $dispatchesEvents = [
-        'created' => ModuleCreated::class,
-        'deleted' => ModuleDeleted::class,
-        'retrieved' => ModuleRetrieved::class,
-        'saved' => ModuleSaved::class,
-        'updated' => ModuleUpdated::class,
-    ];
-
     /**
      * Model constructor
      *
@@ -40,6 +32,7 @@ class Module extends Model implements ModuleContract
     {
         self::$modelData = config('code-acl.models.module');
 
+        $this->dispatchesEvents = self::$modelData['events'];
         $this->setUp();
 
         parent::__construct($attributes);
