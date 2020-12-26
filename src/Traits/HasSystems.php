@@ -121,7 +121,7 @@ trait HasSystems
      *
      * @return $this
      */
-    private function detachSystems(...$systems)
+    private function detachSystems($systems)
     {
         $this->systems()->detach($this->getStoredSystems($systems));
 

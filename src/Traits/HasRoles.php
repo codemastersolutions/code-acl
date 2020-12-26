@@ -146,7 +146,7 @@ trait HasRoles
      *
      * @return $this
      */
-    private function detachRoles(...$roles)
+    private function detachRoles($roles)
     {
         $this->roles()->detach($this->getStoredRoles($roles));
 

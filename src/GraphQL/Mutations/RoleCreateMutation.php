@@ -14,6 +14,13 @@ class RoleCreateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'RoleCreateMutation',
-        'description' => 'Insere um papel'
+        'description' => 'Persiste um papel no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome do papel a ser persistido';
+        return $args;
+    }
 }

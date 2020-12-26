@@ -17,4 +17,17 @@ class ModuleType extends GraphQLType
         'description' => 'Tipo para um módulo',
         'model' => Module::class
     ];
+
+    public function fields(): array
+    {
+        $fields = $this->getBaseFields();
+
+        unset($fields['email']);
+        unset($fields['modules']);
+        unset($fields['permissions']);
+        unset($fields['roles']);
+        unset($fields['systems']);
+
+        return $fields;
+    }
 }

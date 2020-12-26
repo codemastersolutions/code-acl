@@ -4,6 +4,13 @@ return [
     'defaults' => [
         'connection' => env('DB_CONNECTION'),
         'user' => config('auth.providers.users.model'),
+        'user_events' => [
+            'created' => CodeMaster\CodeAcl\Events\User\UserCreated::class,
+            'deleted' => CodeMaster\CodeAcl\Events\User\UserDeleted::class,
+            // 'retrieved' => CodeMaster\CodeAcl\Events\User\UserRetrieved::class,
+            // 'saved' => CodeMaster\CodeAcl\Events\User\UserSaved::class,
+            'updated' => CodeMaster\CodeAcl\Events\User\UserUpdated::class,
+        ],
         'code-acl' => [
             'domain' => env('CODEACL_DOMAIN', null),
             'path' => env('CODEACL_PATH', 'code-acl'),
@@ -23,6 +30,13 @@ return [
          */
         'permission' => [
             'class' => CodeMaster\CodeAcl\Models\Permission::class,
+            'events' => [
+                'created' => CodeMaster\CodeAcl\Events\Permission\PermissionCreated::class,
+                'deleted' => CodeMaster\CodeAcl\Events\Permission\PermissionDeleted::class,
+                // 'retrieved' => CodeMaster\CodeAcl\Events\Permission\PermissionRetrieved::class,
+                // 'saved' => CodeMaster\CodeAcl\Events\Permission\PermissionSaved::class,
+                'updated' => CodeMaster\CodeAcl\Events\Permission\PermissionUpdated::class,
+            ],
             'primary_key' => [
                 /*
                  * Name of field for primary key model.
@@ -109,6 +123,13 @@ return [
          */
         'role' => [
             'class' => CodeMaster\CodeAcl\Models\Role::class,
+            'events' => [
+                'created' => CodeMaster\CodeAcl\Events\Role\RoleCreated::class,
+                'deleted' => CodeMaster\CodeAcl\Events\Role\RoleDeleted::class,
+                // 'retrieved' => CodeMaster\CodeAcl\Events\Role\RoleRetrieved::class,
+                // 'saved' => CodeMaster\CodeAcl\Events\Role\RoleSaved::class,
+                'updated' => CodeMaster\CodeAcl\Events\Role\RoleUpdated::class,
+            ],
             'primary_key' => [
                 /*
                  * Name of field for primary key model.
@@ -239,6 +260,13 @@ return [
          */
         'module' => [
             'class' => CodeMaster\CodeAcl\Models\Module::class,
+            'events' => [
+                'created' => CodeMaster\CodeAcl\Events\Module\ModuleCreated::class,
+                'deleted' => CodeMaster\CodeAcl\Events\Module\ModuleDeleted::class,
+                // 'retrieved' => CodeMaster\CodeAcl\Events\Module\ModuleRetrieved::class,
+                // 'saved' => CodeMaster\CodeAcl\Events\Module\ModuleSaved::class,
+                'updated' => CodeMaster\CodeAcl\Events\Module\ModuleUpdated::class,
+            ],
             'primary_key' => [
                 /*
                  * Name of field for primary key model.
@@ -325,6 +353,13 @@ return [
          */
         'system' => [
             'class' => CodeMaster\CodeAcl\Models\System::class,
+            'events' => [
+                'created' => CodeMaster\CodeAcl\Events\System\SystemCreated::class,
+                'deleted' => CodeMaster\CodeAcl\Events\System\SystemDeleted::class,
+                // 'retrieved' => CodeMaster\CodeAcl\Events\System\SystemRetrieved::class,
+                // 'saved' => CodeMaster\CodeAcl\Events\System\SystemSaved::class,
+                'updated' => CodeMaster\CodeAcl\Events\System\SystemUpdated::class,
+            ],
             'primary_key' => [
                 /*
                  * Name of field for primary key model.

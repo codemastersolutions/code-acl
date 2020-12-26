@@ -16,4 +16,17 @@ class PermissionsPaginatedQuery extends Query
         'name' => 'PermissionsPaginatedQuery',
         'description' => 'Retorna um coleção de permissões com paginação'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['search_term']['description'] = $args['search_term']['description'] . ' de Permissões.';
+        $args['search_field']['description'] = $args['search_field']['description'] . ' de Permissões.';
+        return $args;
+    }
+
+    public function rules(array $args = []): array
+    {
+        return $this->baseRules();
+    }
 }

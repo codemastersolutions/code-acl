@@ -24,14 +24,6 @@ class Role extends Model implements RoleContract
 
     protected $fillable = ['name'];
 
-    protected $dispatchesEvents = [
-        'created' => RoleCreated::class,
-        'deleted' => RoleDeleted::class,
-        'retrieved' => RoleRetrieved::class,
-        'saved' => RoleSaved::class,
-        'updated' => RoleUpdated::class,
-    ];
-
     /**
      * Model constructor
      *
@@ -41,6 +33,7 @@ class Role extends Model implements RoleContract
     {
         self::$modelData = config('code-acl.models.role');
 
+        $this->dispatchesEvents = self::$modelData['events'];
         $this->setUp();
 
         parent::__construct($attributes);

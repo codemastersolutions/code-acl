@@ -22,6 +22,11 @@ use CodeMaster\CodeAcl\Events\System\SystemDeleted;
 use CodeMaster\CodeAcl\Events\System\SystemRetrieved;
 use CodeMaster\CodeAcl\Events\System\SystemSaved;
 use CodeMaster\CodeAcl\Events\System\SystemUpdated;
+use CodeMaster\CodeAcl\Events\User\UserCreated;
+use CodeMaster\CodeAcl\Events\User\UserDeleted;
+use CodeMaster\CodeAcl\Events\User\UserRetrieved;
+use CodeMaster\CodeAcl\Events\User\UserSaved;
+use CodeMaster\CodeAcl\Events\User\UserUpdated;
 use CodeMaster\CodeAcl\Listeners\Module\ModuleCreated as ListenersModuleCreated;
 use CodeMaster\CodeAcl\Listeners\Module\ModuleDeleted as ListenersModuleDeleted;
 use CodeMaster\CodeAcl\Listeners\Module\ModuleRetrieved as ListenersModuleRetrieved;
@@ -42,6 +47,11 @@ use CodeMaster\CodeAcl\Listeners\System\SystemDeleted as ListenersSystemDeleted;
 use CodeMaster\CodeAcl\Listeners\System\SystemRetrieved as ListenersSystemRetrieved;
 use CodeMaster\CodeAcl\Listeners\System\SystemSaved as ListenersSystemSaved;
 use CodeMaster\CodeAcl\Listeners\System\SystemUpdated as ListenersSystemUpdated;
+use CodeMaster\CodeAcl\Listeners\User\UserCreated as ListenersUserCreated;
+use CodeMaster\CodeAcl\Listeners\User\UserDeleted as ListenersUserDeleted;
+use CodeMaster\CodeAcl\Listeners\User\UserRetrieved as ListenersUserRetrieved;
+use CodeMaster\CodeAcl\Listeners\User\UserSaved as ListenersUserSaved;
+use CodeMaster\CodeAcl\Listeners\User\UserUpdated as ListenersUserUpdated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -67,5 +77,10 @@ class EventServiceProvider extends ServiceProvider
         SystemRetrieved::class => [ ListenersSystemRetrieved::class, ],
         SystemSaved::class => [ ListenersSystemSaved::class, ],
         SystemUpdated::class => [ ListenersSystemUpdated::class, ],
+        UserCreated::class => [ ListenersUserCreated::class, ],
+        UserDeleted::class => [ ListenersUserDeleted::class, ],
+        UserRetrieved::class => [ ListenersUserRetrieved::class, ],
+        UserSaved::class => [ ListenersUserSaved::class, ],
+        UserUpdated::class => [ ListenersUserUpdated::class, ],
     ];
 }

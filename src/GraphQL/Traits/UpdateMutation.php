@@ -5,7 +5,6 @@ namespace CodeMaster\CodeAcl\GraphQL\Traits;
 use Closure;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Ramsey\Uuid\Uuid;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 
 trait UpdateMutation
@@ -17,23 +16,25 @@ trait UpdateMutation
         return GraphQL::type(class_basename(\get_class($this->model)));
     }
 
-    public function args(): array
+    public function baseArgs(): array
     {
         return [
             'idOrSlug' => [
-                'type' => Type::nonNull(Type::string())
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'Id ou Slug'
             ],
             'name' => [
-                'type' => Type::nonNull(Type::string())
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'Nome'
             ]
         ];
     }
 
-    protected function rules(): array
+    protected function rules(array $args = []): array
     {
         return [
             'idOrSlug' => ['required'],
-            'name' => ['required', 'max:50'],
+            'name' => ['required', 'string', 'max:50'],
         ];
     }
 

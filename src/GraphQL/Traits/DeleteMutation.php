@@ -8,21 +8,24 @@ use GraphQL\Type\Definition\Type;
 
 trait DeleteMutation
 {
+    use BaseMutation;
+
     public function type(): Type
     {
         return Type::boolean();
     }
 
-    public function args(): array
+    public function baseArgs(): array
     {
         return [
             'idOrSlug' => [
-                'type' => Type::nonNull(Type::string())
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'Id ou Slug'
             ]
         ];
     }
 
-    protected function rules(): array
+    protected function rules(array $args = []): array
     {
         return [
             'idOrSlug' => ['required'],

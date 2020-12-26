@@ -23,14 +23,6 @@ class System extends Model implements SystemContract
 
     protected $fillable = ['name'];
 
-    protected $dispatchesEvents = [
-        'created' => SystemCreated::class,
-        'deleted' => SystemDeleted::class,
-        'retrieved' => SystemRetrieved::class,
-        'saved' => SystemSaved::class,
-        'updated' => SystemUpdated::class,
-    ];
-
     /**
      * Model constructor
      *
@@ -40,6 +32,7 @@ class System extends Model implements SystemContract
     {
         self::$modelData = config('code-acl.models.system');
 
+        $this->dispatchesEvents = self::$modelData['events'];
         $this->setUp();
 
         parent::__construct($attributes);

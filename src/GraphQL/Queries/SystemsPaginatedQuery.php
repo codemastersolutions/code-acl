@@ -16,4 +16,17 @@ class SystemsPaginatedQuery extends Query
         'name' => 'SystemsPaginatedQuery',
         'description' => 'Retorna um coleção de sistemas com paginação'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['search_term']['description'] = $args['search_term']['description'] . ' de Sistemas.';
+        $args['search_field']['description'] = $args['search_field']['description'] . ' de Sistemas.';
+        return $args;
+    }
+
+    public function rules(array $args = []): array
+    {
+        return $this->baseRules();
+    }
 }

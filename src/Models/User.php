@@ -3,6 +3,7 @@
 namespace CodeMaster\CodeAcl\Models;
 
 use CodeMaster\CodeAcl\Contracts\User as UserContract;
+use CodeMaster\CodeAcl\Exceptions\UserDoesNotExist;
 use CodeMaster\CodeAcl\Exceptions\UserModelNotFound;
 use CodeMaster\CodeAcl\Traits\HasModules;
 use CodeMaster\CodeAcl\Traits\HasRoles;
@@ -37,6 +38,7 @@ class User extends Model implements AuthorizableContract, AuthenticatableContrac
 
         self::$model = app(self::$modelClass);
 
+        $this->dispatchesEvents = config('code-acl.defaults.user_events');
         $this->setTable(self::$model->getTable());
         $this->setKeyName(self::$model->getKeyName());
         $this->setKeyType(self::$model->getKeyType());
@@ -45,5 +47,33 @@ class User extends Model implements AuthorizableContract, AuthenticatableContrac
         $this->timestamps = self::$model->usesTimestamps();
 
         parent::__construct($attributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function findById($id): self
+    {
+        $system = self::find($id);
+
+        if (! $system) {
+            throw UserDoesNotExist::withId($id);
+        }
+
+        return $system;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function findByName(string $name): self
+    {
+        $system = self::whereName($name)->first();
+
+        if (! $system) {
+            throw UserDoesNotExist::withName($name);
+        }
+
+        return $system;
     }
 }

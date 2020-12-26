@@ -14,6 +14,13 @@ class PermissionCreateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'PermissionCreateMutation',
-        'description' => 'Insere uma permissão'
+        'description' => 'Persiste uma permissão no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome da permissão a ser persistida';
+        return $args;
+    }
 }

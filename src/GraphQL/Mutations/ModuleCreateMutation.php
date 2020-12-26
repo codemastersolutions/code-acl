@@ -14,6 +14,13 @@ class ModuleCreateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'ModuleCreateMutation',
-        'description' => 'Insere um módulo'
+        'description' => 'Persiste um módulo no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome do módulo a ser persistido';
+        return $args;
+    }
 }

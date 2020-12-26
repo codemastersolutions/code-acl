@@ -14,6 +14,14 @@ class SystemUpdateMutation extends Mutation
 
     protected $attributes = [
         'name' => 'SystemUpdateMutation',
-        'description' => 'Atualiza um sistema'
+        'description' => 'Atualiza um sistema no banco de dados'
     ];
+
+    public function args(): array
+    {
+        $args = $this->baseArgs();
+        $args['name']['description'] = 'Nome do sistema a ser atualizado';
+        $args['idOrSlug']['description'] = 'Id ou Slug do sistema a ser atualizado';
+        return $args;
+    }
 }

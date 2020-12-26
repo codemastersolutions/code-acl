@@ -7,6 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 interface User
 {
     /**
+     * Find a user by name.
+     *
+     * @param string $name
+     * @throws \CodeMaster\CodeAcl\Exceptions\UserDoesNotExist
+     * @return \CodeMaster\CodeAcl\Contracts\User
+     */
+    public static function findByName(string $name): self;
+
+    /**
+     * Find a user by its id.
+     *
+     * @param string|int $id
+     * @throws \CodeMaster\CodeAcl\Exceptions\UserDoesNotExist
+     * @return \CodeMaster\CodeAcl\Contracts\User
+     */
+    public static function findById($id): self;
+
+    /**
      * Grant the given module(s) to a user.
      *
      * @param \CodeMaster\CodeAcl\Contracts\Module|\CodeMaster\CodeAcl\Contracts\Module[]|string|string[]|int|int[] ...$modules
