@@ -5,6 +5,8 @@ services:
     build: ./.docker
     container_name: code-acl
     restart: always
+    volumes:
+      - .:/var/www/html
     tty: true
     ports:
       - "5500:5500"
